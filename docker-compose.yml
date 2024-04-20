@@ -30,11 +30,11 @@ services:
     volumes:
       - ./postgresql/data:/var/lib/postgresql/data
     ports:
-      - "5431:5431"
+      - "5432:5432"
     environment: 
       POSTGRES_DB: sys-fin
-      POSTGRES_USER: root 
-      POSTGRES_PASSWORD: password 
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: postgres
 
   # Application Service
   app:
@@ -65,4 +65,4 @@ services:
       - db 
     environment:
       PGADMIN_DEFAULT_EMAIL: hugomatheus650@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: password 
+      PGADMIN_DEFAULT_PASSWORD: 123 
