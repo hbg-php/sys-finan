@@ -7,6 +7,9 @@ use App\Filament\Resources\LancamentoResource\RelationManagers;
 use App\Models\Lancamento;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,7 +26,19 @@ class LancamentoResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('Recebimento'),
+                TextInput::make('Pagamento'),
+                Radio::make('Tipo Recebimento')
+                    ->options([
+                        '0' => 'Dinheiro',
+                        '1' => 'Bancário'
+                ]),
+                Radio::make('Tipo Pagamento')
+                    ->options([
+                        '0' => 'Mercadorias',
+                        '1' => 'Outros'
+                ]),
+                DatePicker::make('Data do Lançamento')
             ]);
     }
 

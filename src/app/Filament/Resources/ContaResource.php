@@ -7,6 +7,9 @@ use App\Filament\Resources\ContaResource\RelationManagers;
 use App\Models\Conta;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,7 +26,22 @@ class ContaResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('Fornecedor'),
+                TextInput::make('Número do Documento'),
+                TextInput::make('Valor'),
+                TextInput::make('Descrição'),
+                Radio::make('Tipo')
+                    ->options([
+                        '0' => 'Operacional',
+                        '1' => 'Não Operacional'
+                ]),
+                Radio::make('Status')
+                    ->options([
+                        '0' => 'Pago',
+                        '1' => 'Não pago'
+                ]),
+                DatePicker::make('Data do Pagamento'),
+                DatePicker::make('Data do Vencimento')
             ]);
     }
 
