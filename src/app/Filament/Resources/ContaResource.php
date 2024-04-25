@@ -8,6 +8,7 @@ use App\Models\Conta;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
@@ -26,22 +27,24 @@ class ContaResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('Fornecedor'),
-                TextInput::make('Número do Documento'),
-                TextInput::make('Valor'),
-                TextInput::make('Descrição'),
-                Radio::make('Tipo')
+                TextInput::make('fornecedor')->label('Fornecedor'),
+                TextInput::make('numeroDocumento')->label('Número do Documento'),
+                Money::make('valor')->label('Valor'),
+                TextInput::make('descricao')->label('Descrição'),
+                Radio::make('tipo')
+                    ->label('Tipo')
                     ->options([
                         '0' => 'Operacional',
                         '1' => 'Não Operacional'
                 ]),
-                Radio::make('Status')
+                Radio::make('status')
+                    ->label('Status')
                     ->options([
                         '0' => 'Pago',
                         '1' => 'Não pago'
                 ]),
-                DatePicker::make('Data do Pagamento'),
-                DatePicker::make('Data do Vencimento')
+                DatePicker::make('dataPagamento')->label('Data do Pagamento'),
+                DatePicker::make('dataVencimento')->label('Data do Vencimento')
             ]);
     }
 
