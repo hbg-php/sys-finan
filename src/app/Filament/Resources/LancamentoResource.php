@@ -26,6 +26,9 @@ class LancamentoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    private const DINHEIRO = 0;
+    private const MERCADORIAS = 0;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -53,14 +56,17 @@ class LancamentoResource extends Resource
                 TextColumn::make('recebimento')->label('Recebimento')->sortable(),
                 TextColumn::make('pagamento')->label('Pagamento')->sortable(),
                 TextColumn::make('tipoRecebimento')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => 0 === $lancamento->tipoRecebimento ? 'Dinheiro' : 'Bancário')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento ? 'Dinheiro' : 'Bancário')
                     ->label('Tipo de Recebimento')
                     ->sortable(),
                 TextColumn::make('tipoPagamento')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => 0 === $lancamento->tipoPagamento ? 'Mercadorias' : 'Outros')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento ? 'Mercadorias' : 'Outros')
                     ->label('Tipo de Pagamento')
                     ->sortable(),
-                TextColumn::make('dataLancamento')->label('Data de Lançamento')->sortable()->date('d-m-Y')
+                TextColumn::make('dataLancamento')->label('Data de Lançamento')->sortable()->date('d-m-Y'),
+                TextColumn::make('Total')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->recebimento - $lancamento->pagamento)
+                    ->sortable()
             ])
             ->filters([
                 //
