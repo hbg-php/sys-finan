@@ -31,23 +31,24 @@ RUN apt-get -y install --fix-missing \
     libicu-dev \
     libonig-dev \
     libxml2-dev
-    
-# RUN echo "\e[1;33mInstall important docker dependencies\e[0m"
-# RUN docker-php-ext-install \
-#     exif \
-#     pcntl \
-#     bcmath \
-#     ctype \
-#     curl \
-#     iconv \
-#     xml \
-#     soap \
-#     pcntl \
-#     mbstring \
-#     tokenizer \
-#     bz2 \
-#     zip \
-#     intl
+
+RUN docker-php-ext-install intl
+ #RUN echo "\e[1;33mInstall important docker dependencies\e[0m" \
+ #RUN docker-php-ext-install \
+ #    exif \
+ #    pcntl \
+ #    bcmath \
+ #    ctype \
+ #    curl \
+ #    iconv \
+ #    xml \
+ #    soap \
+ #    pcntl \
+ #    mbstring \
+ #    tokenizer \
+ #    bz2 \
+ #    zip \
+ #    intl
 
 # Install Postgre PDO
 RUN apt-get install -y libpq-dev \
