@@ -8,6 +8,7 @@ use App\Models\Lancamento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
@@ -49,7 +50,17 @@ class LancamentoResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('recebimento')->label('Recebimento')->sortable(),
+                TextColumn::make('pagamento')->label('Pagamento')->sortable(),
+                TextColumn::make('tipoRecebimento')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => 0 === $lancamento->tipoRecebimento ? 'Dinheiro' : 'Bancário')
+                    ->label('Tipo de Recebimento')
+                    ->sortable(),
+                TextColumn::make('tipoPagamento')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => 0 === $lancamento->tipoPagamento ? 'Mercadorias' : 'Outros')
+                    ->label('Tipo de Pagamento')
+                    ->sortable(),
+                TextColumn::make('dataLancamento')->label('Data de Lançamento')->sortable()->date('d-m-Y')
             ])
             ->filters([
                 //
