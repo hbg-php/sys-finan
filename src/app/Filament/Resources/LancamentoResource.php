@@ -8,9 +8,12 @@ use App\Models\Lancamento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,19 +29,19 @@ class LancamentoResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('Recebimento'),
-                TextInput::make('Pagamento'),
-                Radio::make('Tipo Recebimento')
+                Money::make('recebimento')->label('Recebimento'),
+                Money::make('pagamento')->label('Pagamento'),
+                Radio::make('tipoRecebimento')->label('Tipo de Recebimento')
                     ->options([
                         '0' => 'Dinheiro',
                         '1' => 'Bancário'
                 ]),
-                Radio::make('Tipo Pagamento')
+                Radio::make('tipoPagamento')->label('Tipo de Pagamento')
                     ->options([
                         '0' => 'Mercadorias',
                         '1' => 'Outros'
                 ]),
-                DatePicker::make('Data do Lançamento')
+                DatePicker::make('dataLancamento')->label('Data de Lançamento'),
             ]);
     }
 
@@ -59,13 +62,6 @@ class LancamentoResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
