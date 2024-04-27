@@ -16,7 +16,8 @@ class Lancamento extends Model
         'isDinheiro',
         'isBancario',
         'isPagamentoMercadoria',
-        'dataLancamento'
+        'dataLancamento',
+        'user_id'
     ];
 
     public function user(): BelongsTo
