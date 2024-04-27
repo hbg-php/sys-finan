@@ -3,9 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContaResource\Pages;
-use App\Filament\Resources\ContaResource\RelationManagers;
 use App\Models\Conta;
-use Filament\Forms;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
@@ -16,8 +14,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ContaResource extends Resource
 {
@@ -59,7 +55,8 @@ class ContaResource extends Resource
     {
         return parent::getEloquentQuery()
             ->select(['contas.*'])
-            ->where('user_id', auth()->id());
+            ->where('user_id', auth()->id())
+            ->orderBy('dataVencimento', 'desc');
     }
 
     public static function table(Table $table): Table
@@ -68,6 +65,7 @@ class ContaResource extends Resource
             ->columns([
                 TextColumn::make('fornecedor')->label('Fornecedor')->sortable(),
                 TextColumn::make('numeroDocumento')->label('Número do Documento')->sortable(),
+                TextColumn::make('valor')->label('Valor')->money('BRL', 0, 'pt_BR')->sortable(),
                 TextColumn::make('descricao')->label('Descrição')->sortable(),
                 TextColumn::make('tipo')
                     ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->tipo
@@ -76,18 +74,18 @@ class ContaResource extends Resource
                     )
                     ->label('Tipo')
                     ->sortable(),
-                TextColumn::make('Status')
+                TextColumn::make('status')
                     ->getStateUsing(fn (Conta $conta): string => self::PAGO === $conta->tipo
                         ? 'Pago'
                         : 'Não pago'
                     )
-                    ->label('Tipo')
+                    ->label('Status')
                     ->sortable(),
                 TextColumn::make('dataPagamento')
                     ->label('Data de Pagamento')
                     ->sortable()
                     ->date('d-m-Y'),
-                TextColumn::make('dataVencimentoo')
+                TextColumn::make('dataVencimento')
                     ->label('Data de Vencimento')
                     ->sortable()
                     ->date('d-m-Y'),

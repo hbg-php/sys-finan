@@ -4,13 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LancamentoResource\Pages;
 use App\Models\Lancamento;
-use Closure;
-use Filament\Forms\Components\Builder;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\QueryBuilder;
-use Illuminate\Support\Str;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
@@ -53,15 +48,22 @@ class LancamentoResource extends Resource
     {
         return parent::getEloquentQuery()
             ->select(['lancamentos.*'])
-            ->where('user_id', auth()->id());
+            ->where('user_id', auth()->id())
+            ->orderBy('dataLancamento', 'desc');
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('recebimento')->label('Recebimento')->sortable(),
-                TextColumn::make('pagamento')->label('Pagamento')->sortable(),
+                TextColumn::make('recebimento')
+                    ->label('Recebimento')
+                    ->money('BRL', 0, 'pt_BR')
+                    ->sortable(),
+                TextColumn::make('pagamento')
+                    ->label('Pagamento')
+                    ->money('BRL', 0, 'pt_BR')
+                    ->sortable(),
                 TextColumn::make('tipoRecebimento')
                     ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento
                         ? 'Dinheiro'
@@ -79,6 +81,7 @@ class LancamentoResource extends Resource
                 TextColumn::make('dataLancamento')->label('Data de Lançamento')->sortable()->date('d-m-Y'),
                 TextColumn::make('Total')
                     ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->recebimento - $lancamento->pagamento)
+                    ->money('BRL', 0, 'pt_BR')
                     ->sortable()
             ])
             ->filters([
