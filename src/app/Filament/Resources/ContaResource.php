@@ -6,8 +6,10 @@ use App\Filament\Resources\ContaResource\Pages;
 use App\Filament\Resources\ContaResource\RelationManagers;
 use App\Models\Conta;
 use Filament\Forms;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
@@ -23,6 +25,10 @@ class ContaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    private const OPERACIONAL = 1;
+
+    private const PAGO = 1;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -34,25 +40,57 @@ class ContaResource extends Resource
                 Radio::make('tipo')
                     ->label('Tipo')
                     ->options([
-                        '0' => 'Operacional',
-                        '1' => 'Não Operacional'
+                        '1' => 'Operacional',
+                        '2' => 'Não Operacional'
                 ]),
                 Radio::make('status')
                     ->label('Status')
                     ->options([
-                        '0' => 'Pago',
-                        '1' => 'Não pago'
+                        '1' => 'Pago',
+                        '2' => 'Não pago'
                 ]),
                 DatePicker::make('dataPagamento')->label('Data do Pagamento'),
-                DatePicker::make('dataVencimento')->label('Data do Vencimento')
+                DatePicker::make('dataVencimento')->label('Data do Vencimento'),
+                Hidden::make('user_id')
             ]);
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->select(['contas.*'])
+            ->where('user_id', auth()->id());
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('fornecedor')->label('Fornecedor')->sortable(),
+                TextColumn::make('numeroDocumento')->label('Número do Documento')->sortable(),
+                TextColumn::make('descricao')->label('Descrição')->sortable(),
+                TextColumn::make('tipo')
+                    ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->tipo
+                        ? 'Operacional'
+                        : 'Não Operacional'
+                    )
+                    ->label('Tipo')
+                    ->sortable(),
+                TextColumn::make('Status')
+                    ->getStateUsing(fn (Conta $conta): string => self::PAGO === $conta->tipo
+                        ? 'Pago'
+                        : 'Não pago'
+                    )
+                    ->label('Tipo')
+                    ->sortable(),
+                TextColumn::make('dataPagamento')
+                    ->label('Data de Pagamento')
+                    ->sortable()
+                    ->date('d-m-Y'),
+                TextColumn::make('dataVencimentoo')
+                    ->label('Data de Vencimento')
+                    ->sortable()
+                    ->date('d-m-Y'),
             ])
             ->filters([
                 //

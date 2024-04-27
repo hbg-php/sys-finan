@@ -3,22 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LancamentoResource\Pages;
-use App\Filament\Resources\LancamentoResource\RelationManagers;
 use App\Models\Lancamento;
-use Filament\Forms;
+use Closure;
+use Filament\Forms\Components\Builder;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\QueryBuilder;
+use Illuminate\Support\Str;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Resources\Resource;
-use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LancamentoResource extends Resource
 {
@@ -26,8 +25,8 @@ class LancamentoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    private const DINHEIRO = 0;
-    private const MERCADORIAS = 0;
+    private const DINHEIRO = 1;
+    private const MERCADORIAS = 1;
 
     public static function form(Form $form): Form
     {
@@ -46,7 +45,15 @@ class LancamentoResource extends Resource
                         '1' => 'Outros'
                 ]),
                 DatePicker::make('dataLancamento')->label('Data de Lançamento'),
+                Hidden::make('user_id')
             ]);
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->select(['lancamentos.*'])
+            ->where('user_id', auth()->id());
     }
 
     public static function table(Table $table): Table
@@ -56,11 +63,17 @@ class LancamentoResource extends Resource
                 TextColumn::make('recebimento')->label('Recebimento')->sortable(),
                 TextColumn::make('pagamento')->label('Pagamento')->sortable(),
                 TextColumn::make('tipoRecebimento')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento ? 'Dinheiro' : 'Bancário')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento
+                        ? 'Dinheiro'
+                        : 'Bancário'
+                    )
                     ->label('Tipo de Recebimento')
                     ->sortable(),
                 TextColumn::make('tipoPagamento')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento ? 'Mercadorias' : 'Outros')
+                    ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento
+                        ? 'Mercadorias'
+                        : 'Outros'
+                    )
                     ->label('Tipo de Pagamento')
                     ->sortable(),
                 TextColumn::make('dataLancamento')->label('Data de Lançamento')->sortable()->date('d-m-Y'),

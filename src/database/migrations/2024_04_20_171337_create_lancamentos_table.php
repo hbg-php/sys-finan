@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('recebimento');
             $table->string('pagamento');
-            $table->string('isDinheiro')->default('0');
-            $table->string('isPagamentoMercadoria')->default('0');
+            $table->string('tipoRecebimento');
+            $table->string('tipoPagamento');
             $table->date('dataLancamento')->nullable();
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->default(auth()->id());
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });
