@@ -13,9 +13,8 @@ class Lancamento extends Model
     protected $fillable = [
         'recebimento',
         'pagamento',
-        'isDinheiro',
-        'isBancario',
-        'isPagamentoMercadoria',
+        'tipoRecebimento',
+        'tipoPagamento',
         'dataLancamento',
         'user_id'
     ];
