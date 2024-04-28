@@ -33,6 +33,10 @@ RUN apt-get -y install --fix-missing \
     libxml2-dev
 
 RUN docker-php-ext-install intl
+
+RUN docker-php-ext-install zip
+
+RUN docker-php-ext-install bcmath
  #RUN echo "\e[1;33mInstall important docker dependencies\e[0m" \
  #RUN docker-php-ext-install \
  #    exif \
