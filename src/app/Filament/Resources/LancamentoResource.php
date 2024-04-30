@@ -18,7 +18,11 @@ class LancamentoResource extends Resource
 {
     protected static ?string $model = Lancamento::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+
+    protected static ?string $modelLabel = 'Lançamentos';
+
+    protected static ?string $navigationGroup = 'Estabelecimento';
 
     private const DINHEIRO = 1;
     private const MERCADORIAS = 1;

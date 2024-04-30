@@ -7,6 +7,7 @@ use App\Models\Conta;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
@@ -19,11 +20,17 @@ class ContaResource extends Resource
 {
     protected static ?string $model = Conta::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
-    private const OPERACIONAL = 1;
+    protected static ?string $modelLabel = 'Contas';
 
-    private const PAGO = 1;
+    protected static ?string $navigationGroup = 'Estabelecimento';
+
+    private const OPERACIONAL = '1';
+
+    private const PAGO = '1';
+
+    private const NAO_PAGO = '2';
 
     public static function form(Form $form): Form
     {
@@ -74,11 +81,15 @@ class ContaResource extends Resource
                     )
                     ->label('Tipo')
                     ->sortable(),
-                TextColumn::make('status')
-                    ->getStateUsing(fn (Conta $conta): string => self::PAGO === $conta->tipo
-                        ? 'Pago'
-                        : 'Não pago'
-                    )
+                IconColumn::make('status')
+                    ->icon(fn (Conta $conta): string => match($conta->status) {
+                        self::PAGO => 'heroicon-o-check-circle',
+                        self::NAO_PAGO => 'heroicon-o-clock'
+                    })
+                    ->color(fn (Conta $conta): string => match($conta->status) {
+                        self::PAGO => 'success',
+                        self::NAO_PAGO => 'warning'
+                    })
                     ->label('Status')
                     ->sortable(),
                 TextColumn::make('dataPagamento')
