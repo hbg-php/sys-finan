@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
@@ -84,11 +86,11 @@ class ContaResource extends Resource
                 IconColumn::make('status')
                     ->icon(fn (Conta $conta): string => match($conta->status) {
                         self::PAGO => 'heroicon-o-check-circle',
-                        self::NAO_PAGO => 'heroicon-o-clock'
+                        self::NAO_PAGO => 'heroicon-o-x-mark'
                     })
                     ->color(fn (Conta $conta): string => match($conta->status) {
                         self::PAGO => 'success',
-                        self::NAO_PAGO => 'warning'
+                        self::NAO_PAGO => 'danger'
                     })
                     ->label('Status')
                     ->sortable(),
@@ -102,7 +104,10 @@ class ContaResource extends Resource
                     ->date('d-m-Y'),
             ])
             ->filters([
-                //
+                Filter::make('Contas Pagas')
+                    ->query(fn (Builder $query): Builder => $query->where('status', '1')),
+                Filter::make('Contas Não Pagas')
+                    ->query(fn (Builder $query): Builder => $query->where('status', '2'))
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
