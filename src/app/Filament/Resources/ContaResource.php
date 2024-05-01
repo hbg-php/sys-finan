@@ -30,6 +30,8 @@ class ContaResource extends Resource
 
     private const OPERACIONAL = '1';
 
+    private const NAO_OPERACIONAL = '2';
+
     private const PAGO = '1';
 
     private const NAO_PAGO = '2';
@@ -105,9 +107,13 @@ class ContaResource extends Resource
             ])
             ->filters([
                 Filter::make('Contas Pagas')
-                    ->query(fn (Builder $query): Builder => $query->where('status', '1')),
+                    ->query(fn (Builder $query): Builder => $query->where('status', self::PAGO)),
                 Filter::make('Contas Não Pagas')
-                    ->query(fn (Builder $query): Builder => $query->where('status', '2'))
+                    ->query(fn (Builder $query): Builder => $query->where('status', self::NAO_PAGO)),
+                Filter::make('Operacional')
+                    ->query(fn (Builder $query): Builder => $query->where('tipo', self::OPERACIONAL)),
+                Filter::make('Não Operacional')
+                    ->query(fn (Builder $query): Builder => $query->where('tipo', self::NAO_OPERACIONAL)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
