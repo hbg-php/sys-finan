@@ -6,6 +6,8 @@ use App\Filament\Resources\LancamentoResource\Pages;
 use App\Models\Lancamento;
 use Filament\Forms\Form;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
@@ -24,8 +26,13 @@ class LancamentoResource extends Resource
 
     protected static ?string $navigationGroup = 'Estabelecimento';
 
-    private const DINHEIRO = 1;
-    private const MERCADORIAS = 1;
+    private const DINHEIRO = '1';
+
+    private const BANCARIO = '2';
+
+    private const MERCADORIAS = '1';
+
+    private const OUTROS = '2';
 
     public static function form(Form $form): Form
     {
@@ -89,7 +96,14 @@ class LancamentoResource extends Resource
                     ->sortable()
             ])
             ->filters([
-                //
+                Filter::make('Dinheiro')
+                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::DINHEIRO)),
+                Filter::make('Bancário')
+                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::BANCARIO)),
+                Filter::make('Mercadoria')
+                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::MERCADORIAS)),
+                Filter::make('Outros')
+                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::OUTROS)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
