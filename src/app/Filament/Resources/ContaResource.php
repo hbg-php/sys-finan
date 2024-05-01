@@ -74,7 +74,7 @@ class ContaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('fornecedor')->label('Fornecedor')->sortable(),
+                TextColumn::make('fornecedor')->label('Fornecedor')->sortable()->searchable(),
                 TextColumn::make('numeroDocumento')->label('Número do Documento')->sortable(),
                 TextColumn::make('valor')->label('Valor')->money('BRL', 0, 'pt_BR')->sortable(),
                 TextColumn::make('descricao')->label('Descrição')->sortable(),
@@ -84,7 +84,8 @@ class ContaResource extends Resource
                         : 'Não Operacional'
                     )
                     ->label('Tipo')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 IconColumn::make('status')
                     ->icon(fn (Conta $conta): string => match($conta->status) {
                         self::PAGO => 'heroicon-o-check-circle',
