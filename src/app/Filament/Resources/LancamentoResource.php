@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\LancamentoExporter;
 use App\Filament\Resources\LancamentoResource\Pages;
 use App\Models\Lancamento;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Form;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
@@ -112,6 +115,13 @@ class LancamentoResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(LancamentoExporter::class)
+                    ->formats([
+                        ExportFormat::Xlsx,
+                    ])
             ]);
     }
 
