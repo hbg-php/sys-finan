@@ -122,6 +122,7 @@ class LancamentoResource extends Resource
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
+                    ->fileName(fn (): string => 'lancamentos')
             ]);
     }
 
