@@ -11,19 +11,37 @@ class LancamentoExporter extends Exporter
 {
     protected static ?string $model = Lancamento::class;
 
+    private const DINHEIRO = '1';
+
+    private const BANCARIO = '2';
+
+    private const MERCADORIAS = '1';
+
+    private const OUTROS = '0';
+
     public static function getColumns(): array
     {
         return [
-            ExportColumn::make('id')
-                ->label('ID'),
-            ExportColumn::make('recebimento'),
-            ExportColumn::make('pagamento'),
-            ExportColumn::make('tipoRecebimento'),
-            ExportColumn::make('tipoPagamento'),
-            ExportColumn::make('dataLancamento'),
-            ExportColumn::make('user.name'),
-            ExportColumn::make('created_at'),
-            ExportColumn::make('updated_at'),
+            ExportColumn::make('recebimento')
+                ->label('Recebimento'),
+            ExportColumn::make('pagamento')
+                ->label('Pagamento'),
+            ExportColumn::make('tipoRecebimento')
+                ->label('Tipo de Recebimento')
+                ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento
+                    ? 'Dinheiro'
+                    : 'Bancário'
+                ),
+            ExportColumn::make('tipoPagamento')
+                ->label('Tipo de Pagamento')
+                ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento
+                    ? 'Mercadorias'
+                    : 'Outros'
+                ),
+            ExportColumn::make('dataLancamento')
+                ->label('Data do Lançamento'),
+            ExportColumn::make('created_at')
+                ->label('Data do Cadastro'),
         ];
     }
 
