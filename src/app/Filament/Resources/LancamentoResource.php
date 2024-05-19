@@ -35,7 +35,7 @@ class LancamentoResource extends Resource
 
     private const MERCADORIAS = '1';
 
-    private const OUTROS = '2';
+    private const OUTROS = '0';
 
     public static function form(Form $form): Form
     {
@@ -45,13 +45,13 @@ class LancamentoResource extends Resource
                 Money::make('pagamento')->label('Pagamento'),
                 Radio::make('tipoRecebimento')->label('Tipo de Recebimento')
                     ->options([
-                        '0' => 'Dinheiro',
-                        '1' => 'Bancário'
+                        '1' => 'Dinheiro',
+                        '0' => 'Bancário'
                 ]),
                 Radio::make('tipoPagamento')->label('Tipo de Pagamento')
                     ->options([
-                        '0' => 'Mercadorias',
-                        '1' => 'Outros'
+                        '1' => 'Mercadorias',
+                        '0' => 'Outros'
                 ]),
                 DatePicker::make('dataLancamento')->label('Data de Lançamento'),
                 Hidden::make('user_id')
