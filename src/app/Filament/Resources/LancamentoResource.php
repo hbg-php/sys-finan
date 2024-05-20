@@ -31,7 +31,7 @@ class LancamentoResource extends Resource
 
     private const DINHEIRO = '1';
 
-    private const BANCARIO = '2';
+    private const BANCARIO = '0';
 
     private const MERCADORIAS = '1';
 
