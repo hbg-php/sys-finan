@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ContasNaoPagasExporter;
 use App\Filament\Resources\ContaResource\Pages;
 use App\Models\Conta;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
@@ -123,6 +126,21 @@ class ContaResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])->headerActions([
+                ExportAction::make()
+                    ->exporter(ContasNaoPagasExporter::class)
+                    ->label('Relatório Contas Não Pagas')
+                    ->formats([
+                        ExportFormat::Xlsx,
+                    ])
+                    ->fileName(fn (): string => 'contas_nao_pagas'),
+                /*ExportAction::make()
+                    ->exporter(ContasPagasExporter::class)
+                    ->label('Relatório Contas Pagas')
+                    ->formats([
+                        ExportFormat::Xlsx,
+                    ])
+                    ->fileName(fn (): string => 'contas_pagas'),*/
             ]);
     }
 

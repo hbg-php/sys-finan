@@ -54,6 +54,7 @@ class LancamentoResource extends Resource
                         '0' => 'Outros'
                 ]),
                 DatePicker::make('dataLancamento')->label('Data de Lançamento'),
+                //FileUpload::make('attachment')->label('Comprovante')->preserveFilenames()->deletable(),
                 Hidden::make('user_id')
             ]);
     }
@@ -119,6 +120,7 @@ class LancamentoResource extends Resource
             ->headerActions([
                 ExportAction::make()
                     ->exporter(LancamentoExporter::class)
+                    ->label('Relatório de Lançamentos')
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
