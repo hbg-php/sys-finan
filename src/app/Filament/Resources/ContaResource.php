@@ -10,8 +10,8 @@ use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Leandrocfe\FilamentPtbrFormFields\Money;
@@ -89,15 +89,10 @@ class ContaResource extends Resource
                     ->label('Tipo')
                     ->sortable()
                     ->searchable(),
-                IconColumn::make('status')
-                    ->icon(fn (Conta $conta): string => match($conta->status) {
-                        self::PAGO => 'heroicon-o-check-circle',
-                        self::NAO_PAGO => 'heroicon-o-x-mark'
-                    })
-                    ->color(fn (Conta $conta): string => match($conta->status) {
-                        self::PAGO => 'success',
-                        self::NAO_PAGO => 'danger'
-                    })
+                ToggleColumn::make('status')
+                    ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->status)
+                    ->onColor('success')
+                    ->offColor('danger')
                     ->label('Status')
                     ->sortable(),
                 TextColumn::make('dataPagamento')
