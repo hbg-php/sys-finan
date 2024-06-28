@@ -107,6 +107,10 @@ class ContaResource extends Resource
                     ->searchable()
                     ->visibleFrom('md'),
                 ToggleColumn::make('status')
+                    ->beforeStateUpdated(fn (Conta $conta) => self::PAGO !== $conta->status
+                        ? $conta->update(['dataPagamento' => date('Y-m-d')])
+                        : $conta->update(['dataPagamento' => null])
+                    )
                     ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->status)
                     ->onColor('success')
                     ->offColor('danger')
