@@ -76,11 +76,27 @@ class ContaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->filtersTriggerAction(fn (Tables\Actions\Action $action) =>
+                $action->icon('heroicon-o-adjustments-vertical')
+            )
             ->columns([
-                TextColumn::make('fornecedor')->label('Fornecedor')->sortable()->searchable(),
-                TextColumn::make('numeroDocumento')->label('Número do Documento')->sortable(),
-                TextColumn::make('valor')->label('Valor')->money('BRL', 0, 'pt_BR')->sortable(),
-                TextColumn::make('descricao')->label('Descrição')->sortable(),
+                TextColumn::make('fornecedor')
+                    ->label('Fornecedor')
+                    ->sortable()
+                    ->searchable()
+                    ->visibleFrom('md'),
+                TextColumn::make('numeroDocumento')
+                    ->label('Número do Documento')
+                    ->sortable()
+                    ->visibleFrom('md'),
+                TextColumn::make('valor')
+                    ->label('Valor')
+                    ->money('BRL', 0, 'pt_BR')
+                    ->sortable(),
+                TextColumn::make('descricao')
+                    ->label('Descrição')
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('tipo')
                     ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->tipo
                         ? 'Operacional'
@@ -88,7 +104,8 @@ class ContaResource extends Resource
                     )
                     ->label('Tipo')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->visibleFrom('md'),
                 ToggleColumn::make('status')
                     ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->status)
                     ->onColor('success')
@@ -98,7 +115,8 @@ class ContaResource extends Resource
                 TextColumn::make('dataPagamento')
                     ->label('Data de Pagamento')
                     ->sortable()
-                    ->date('d-m-Y'),
+                    ->date('d-m-Y')
+                    ->visibleFrom('md'),
                 TextColumn::make('dataVencimento')
                     ->label('Data de Vencimento')
                     ->sortable()

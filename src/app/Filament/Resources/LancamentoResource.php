@@ -74,26 +74,33 @@ class LancamentoResource extends Resource
                 TextColumn::make('recebimento')
                     ->label('Recebimento')
                     ->money('BRL', 0, 'pt_BR')
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('pagamento')
                     ->label('Pagamento')
                     ->money('BRL', 0, 'pt_BR')
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('tipoRecebimento')
                     ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento
                         ? 'Dinheiro'
                         : 'Bancário'
                     )
                     ->label('Tipo de Recebimento')
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('tipoPagamento')
                     ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento
                         ? 'Mercadorias'
                         : 'Outros'
                     )
                     ->label('Tipo de Pagamento')
-                    ->sortable(),
-                TextColumn::make('dataLancamento')->label('Data de Lançamento')->sortable()->date('d-m-Y'),
+                    ->sortable()
+                    ->visibleFrom('md'),
+                TextColumn::make('dataLancamento')
+                    ->label('Data de Lançamento')
+                    ->sortable()
+                    ->date('d-m-Y'),
                 TextColumn::make('Total')
                     ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->recebimento - $lancamento->pagamento)
                     ->money('BRL', 0, 'pt_BR')
