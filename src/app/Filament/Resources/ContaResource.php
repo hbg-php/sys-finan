@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\ContasNaoPagasExporter;
 use App\Filament\Resources\ContaResource\Pages;
 use App\Models\Conta;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\Hidden;
@@ -14,6 +15,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\DatePicker;
@@ -150,6 +153,17 @@ class ContaResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('Pdf')
+                        ->icon('heroicon-m-arrow-down-tray')
+                        ->openUrlInNewTab()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $contas) {
+                            return response()->streamDownload(function () use ($contas) {
+                                echo Pdf::loadHTML(
+                                    Blade::render('contas-pdf', ['contas' => $contas])
+                                )->stream();
+                            }, 'contas.pdf');
+                        }),
                 ]),
             ])->headerActions([
                 ExportAction::make()
