@@ -70,6 +70,9 @@ class LancamentoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->filtersTriggerAction(fn (Tables\Actions\Action $action) =>
+            $action->icon('heroicon-o-adjustments-vertical')
+            )
             ->columns([
                 TextColumn::make('recebimento')
                     ->label('Recebimento')
@@ -117,7 +120,15 @@ class LancamentoResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::OUTROS)),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->hiddenLabel(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(function (Tables\Actions\Action $action) {
+                        $action->modalDescription('Tem certeza que deseja excluir este lançamento?');
+                        $action->modalHeading('Excluir Lançamento');
+
+                        return $action;
+                    })
+                    ->hiddenLabel(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
