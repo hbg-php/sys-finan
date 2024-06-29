@@ -137,7 +137,15 @@ class ContaResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('tipo', self::NAO_OPERACIONAL)),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->hiddenLabel(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(function (Tables\Actions\Action $action) {
+                        $action->modalDescription('Tem certeza que deseja excluir esta conta?');
+                        $action->modalHeading('Excluir Conta');
+
+                        return $action;
+                    })
+                    ->hiddenLabel(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
