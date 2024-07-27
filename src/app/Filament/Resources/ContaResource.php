@@ -79,26 +79,24 @@ class ContaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->filtersLayout(Tables\Enums\FiltersLayout::AboveContent)
             ->filtersTriggerAction(fn (Tables\Actions\Action $action) =>
                 $action->icon('heroicon-o-adjustments-vertical')
             )
+            ->filtersFormColumns(2)
             ->columns([
                 TextColumn::make('fornecedor')
                     ->label('Fornecedor')
-                    ->sortable()
                     ->searchable()
                     ->visibleFrom('md'),
                 TextColumn::make('numeroDocumento')
                     ->label('Número do Documento')
-                    ->sortable()
                     ->visibleFrom('md'),
                 TextColumn::make('valor')
                     ->label('Valor')
-                    ->money('BRL', 0, 'pt_BR')
-                    ->sortable(),
+                    ->money('BRL', 0, 'pt_BR'),
                 TextColumn::make('descricao')
                     ->label('Descrição')
-                    ->sortable()
                     ->visibleFrom('md'),
                 TextColumn::make('tipo')
                     ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->tipo
@@ -106,7 +104,6 @@ class ContaResource extends Resource
                         : 'Não Operacional'
                     )
                     ->label('Tipo')
-                    ->sortable()
                     ->searchable()
                     ->visibleFrom('md'),
                 ToggleColumn::make('status')
@@ -117,19 +114,38 @@ class ContaResource extends Resource
                     ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->status)
                     ->onColor('success')
                     ->offColor('danger')
-                    ->label('Status')
-                    ->sortable(),
+                    ->label('Status'),
                 TextColumn::make('dataPagamento')
                     ->label('Data de Pagamento')
-                    ->sortable()
                     ->date('d-m-Y')
                     ->visibleFrom('md'),
                 TextColumn::make('dataVencimento')
                     ->label('Data de Vencimento')
-                    ->sortable()
                     ->date('d-m-Y'),
             ])
             ->filters([
+                Filter::make('fornecedor')
+                    ->form([
+                        TextInput::make('fornecedor')->label('Fornecedor'),
+                    ])
+                    ->query(function (Builder $query, $data) {
+                        return $query
+                            ->when(
+                                $data['fornecedor'],
+                                fn (Builder $query, $value): Builder => $query->where('fornecedor', 'LIKE', "%{$data['fornecedor']}%")
+                            );
+                    }),
+                Filter::make('dataVencimento')
+                    ->form([
+                        DatePicker::make('dataVencimento')->label('Data do vencimento até:'),
+                    ])
+                    ->query(function (Builder $query, $data) {
+                        return $query
+                            ->when(
+                                $data['dataVencimento'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('dataVencimento', '<=', $date)
+                            );
+                    }),
                 Filter::make('Contas Pagas')
                     ->query(fn (Builder $query): Builder => $query->where('status', self::PAGO)),
                 Filter::make('Contas Não Pagas')
