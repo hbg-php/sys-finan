@@ -141,10 +141,16 @@ class ContaResource extends Resource
                         Money::make('valor')->label('Valor'),
                     ])
                     ->query(function (Builder $query, $data): Builder {
+                        $valorFloat = (float) str_replace(',', '.', $data['valor']);
                         return $query
                             ->when(
-                                (float) $data['valor'] > 0,
-                                fn (Builder $query, $valor): Builder => $query->where('valor', '=', $valor)
+                                $valorFloat > 0,
+                                fn (Builder $query, $valor): Builder => $query
+                                    ->where(
+                                        'valor',
+                                        '=',
+                                        number_format($valorFloat*10, 2, '.', '')
+                                    )
                             );
                     }),
                 Filter::make('Contas Pagas')
