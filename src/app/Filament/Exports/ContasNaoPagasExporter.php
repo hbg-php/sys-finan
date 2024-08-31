@@ -59,6 +59,8 @@ class ContasNaoPagasExporter extends Exporter
 
     public static function modifyQuery(Builder $query): Builder
     {
-        return $query->where('status', '=', self::NAO_PAGO);
+        return $query
+            ->where('status', '=', self::NAO_PAGO)
+            ->orderBy('dataVencimento', 'desc');
     }
 }
