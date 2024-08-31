@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Exports\ContasNaoPagasExporter;
+use App\Filament\Exports\ContasPagasExporter;
 use App\Filament\Resources\ContaResource\Pages;
 use App\Models\Conta;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -135,15 +136,15 @@ class ContaResource extends Resource
                                 fn (Builder $query, $value): Builder => $query->where('fornecedor', 'LIKE', "%{$data['fornecedor']}%")
                             );
                     }),
-                Filter::make('dataVencimento')
+                Filter::make('Valor')
                     ->form([
-                        DatePicker::make('dataVencimento')->label('Data do vencimento até:'),
+                        Money::make('valor')->label('Valor'),
                     ])
-                    ->query(function (Builder $query, $data) {
+                    ->query(function (Builder $query, $data): Builder {
                         return $query
                             ->when(
-                                $data['dataVencimento'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('dataVencimento', '<=', $date)
+                                (float) $data['valor'] > 0,
+                                fn (Builder $query, $valor): Builder => $query->where('valor', '=', $valor)
                             );
                     }),
                 Filter::make('Contas Pagas')
@@ -154,6 +155,28 @@ class ContaResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('tipo', self::OPERACIONAL)),
                 Filter::make('Não Operacional')
                     ->query(fn (Builder $query): Builder => $query->where('tipo', self::NAO_OPERACIONAL)),
+                Filter::make('dataIntervalo')
+                    ->form([
+                        DatePicker::make('dataVencimento')->label('Data inicial:'),
+                    ])
+                    ->query(function (Builder $query, $data) {
+                        return $query
+                            ->when(
+                                $data['dataVencimento'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('dataVencimento', '>=', $date)
+                            );
+                    }),
+                Filter::make('dataIntervalo2')
+                    ->form([
+                        DatePicker::make('dataVencimento')->label('Data Final:'),
+                    ])
+                    ->query(function (Builder $query, $data) {
+                        return $query
+                            ->when(
+                                $data['dataVencimento'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('dataVencimento', '<=', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->hiddenLabel(),
@@ -182,20 +205,20 @@ class ContaResource extends Resource
                         }),
                 ]),
             ])->headerActions([
-                ExportAction::make()
+                ExportAction::make('relatorioContasNaoPagas')
                     ->exporter(ContasNaoPagasExporter::class)
                     ->label('Relatório Contas Não Pagas')
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
                     ->fileName(fn (): string => 'contas_nao_pagas'),
-                /*ExportAction::make()
+                ExportAction::make('relatorioContasPagas')
                     ->exporter(ContasPagasExporter::class)
                     ->label('Relatório Contas Pagas')
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
-                    ->fileName(fn (): string => 'contas_pagas'),*/
+                    ->fileName(fn (): string => 'contas_nao_pagas'),
             ]);
     }
 
