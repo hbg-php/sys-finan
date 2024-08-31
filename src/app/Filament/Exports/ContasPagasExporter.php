@@ -3,7 +3,6 @@
 namespace App\Filament\Exports;
 
 use App\Models\Conta;
-use App\Models\ContasPagas;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
@@ -11,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ContasPagasExporter extends Exporter
 {
-    protected static ?string $model = ContasPagas::class;
+    protected static ?string $model = Conta::class;
     private const OPERACIONAL = '1';
 
     private const PAGO = '1';
