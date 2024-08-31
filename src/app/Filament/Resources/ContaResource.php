@@ -218,7 +218,7 @@ class ContaResource extends Resource
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
-                    ->fileName(fn (): string => 'contas_nao_pagas'),
+                    ->fileName(fn (): string => 'contas_pagas'),
             ]);
     }
 
