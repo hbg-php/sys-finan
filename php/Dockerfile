@@ -1,60 +1,57 @@
-FROM php:8.2.11-fpm
+# Use uma imagem base do PHP com Apache (mod_php)
+FROM php:8.2-apache
 
-# Install composer
-RUN echo "\e[1;33mInstall COMPOSER\e[0m"
-RUN cd /tmp \
-    && curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
+# Certificar-se de que o repositório APT está atualizado e instalar pacotes necessários
+#RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
-RUN docker-php-ext-install pdo pdo_mysql
-
-RUN apt-get update
-
-# Install useful tools
-RUN apt-get -y install apt-utils nano wget dialog vim
-
-# Install important libraries
-RUN echo "\e[1;33mInstall important libraries\e[0m"
-RUN apt-get -y install --fix-missing \
-    apt-utils \
-    build-essential \
-    git \
+# Instalar dependências do sistema para extensões PHP
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
     curl \
-    libcurl4 \
+    git \
     libcurl4-openssl-dev \
     zlib1g-dev \
     libzip-dev \
-    zip \
     libbz2-dev \
-    locales \
-    libmcrypt-dev \
     libicu-dev \
     libonig-dev \
-    libxml2-dev
+    libxml2-dev \
+    libpq-dev \
+    default-libmysqlclient-dev \
+    && apt-get clean
 
-RUN docker-php-ext-install intl
+# Instalar as extensões PHP necessárias
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql intl zip bcmath
 
-RUN docker-php-ext-install zip
+# Instalar o Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN docker-php-ext-install bcmath
- #RUN echo "\e[1;33mInstall important docker dependencies\e[0m" \
- #RUN docker-php-ext-install \
- #    exif \
- #    pcntl \
- #    bcmath \
- #    ctype \
- #    curl \
- #    iconv \
- #    xml \
- #    soap \
- #    pcntl \
- #    mbstring \
- #    tokenizer \
- #    bz2 \
- #    zip \
- #    intl
+# Habilitar mod_rewrite do Apache (necessário para URLs amigáveis no Laravel)
+RUN a2enmod rewrite
 
-# Install Postgre PDO
-RUN apt-get install -y libpq-dev \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql
+# Copiar arquivos de configuração do Apache
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+#RUN a2ensite 000-default.conf
+
+# Definir o diretório de trabalho
+WORKDIR /var/www/html/
+
+COPY ./src /var/www/html/
+
+COPY ./src/composer.json /var/www/html/
+
+# Configurar permissões de pasta para o Laravel (storage e bootstrap/cache)
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+RUN composer install --no-dev --optimize-autoloader
+
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# Expor as portas configuradas no docker-compose.yml (8085 para HTTP e 8443 para HTTPS)
+EXPOSE 80
+#EXPOSE 9000
+
+# Iniciar o Apache em primeiro plano
+CMD ["apache2-foreground"]
