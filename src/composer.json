@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ariaieboy/filament-currency": "^1.4",
         "barryvdh/laravel-dompdf": "^2.1",
         "filament/filament": "^3.2",
@@ -23,7 +23,9 @@
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^8.0",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^10.1",
+        "rector/rector": "^2.0",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {
