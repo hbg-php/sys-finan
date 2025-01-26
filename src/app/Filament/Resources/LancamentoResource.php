@@ -12,6 +12,7 @@ use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,7 +23,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
-use Leandrocfe\FilamentPtbrFormFields\Money;
 
 final class LancamentoResource extends Resource
 {
@@ -46,8 +46,8 @@ final class LancamentoResource extends Resource
     {
         return $form
             ->schema([
-                Money::make('recebimento')->label('Recebimento'),
-                Money::make('pagamento')->label('Pagamento'),
+                TextInput::make('recebimento')->label('Recebimento')->currencyMask('.', ',', 2),
+                TextInput::make('pagamento')->label('Pagamento')->currencyMask('.', ',', 2),
                 Radio::make('tipoRecebimento')->label('Tipo de Recebimento')
                     ->options([
                         '1' => 'Dinheiro',

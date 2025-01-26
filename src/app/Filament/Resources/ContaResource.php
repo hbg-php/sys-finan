@@ -51,7 +51,7 @@ final class ContaResource extends Resource
             ->schema([
                 TextInput::make('fornecedor')->label('Fornecedor'),
                 TextInput::make('numeroDocumento')->label('Número do Documento'),
-                Money::make('valor')->label('Valor'),
+                TextInput::make('valor')->label('Valor')->currencyMask('.', ',', 2),
                 TextInput::make('descricao')->label('Descrição'),
                 Radio::make('tipo')
                     ->label('Tipo')
@@ -113,7 +113,7 @@ final class ContaResource extends Resource
                         ? $conta->update(['dataPagamento' => date('Y-m-d')])
                         : $conta->update(['dataPagamento' => null])
                     )
-                    ->getStateUsing(fn (Conta $conta): string => $conta->status === self::OPERACIONAL)
+                    ->getStateUsing(fn (Conta $conta): bool => $conta->status === self::OPERACIONAL)
                     ->onColor('success')
                     ->offColor('danger')
                     ->label('Status'),
