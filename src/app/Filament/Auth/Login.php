@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Auth;
 
-use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Component;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Pages\Auth\Login as BaseAuth;
 use Illuminate\Validation\ValidationException;
 
-class Login extends BaseAuth
+final class Login extends BaseAuth
 {
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                //$this->getEmailFormComponent(),
+                // $this->getEmailFormComponent(),
                 $this->getLoginFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
@@ -37,7 +39,7 @@ class Login extends BaseAuth
     {
         return [
             'cnpj' => (string) $data['cnpj'],
-            'password'  => $data['password'],
+            'password' => $data['password'],
         ];
     }
 

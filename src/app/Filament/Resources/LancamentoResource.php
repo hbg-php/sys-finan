@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Exports\LancamentoExporter;
@@ -7,31 +9,23 @@ use App\Filament\Resources\LancamentoResource\Pages;
 use App\Models\Lancamento;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Leandrocfe\FilamentPtbrFormFields\Money;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 
-class LancamentoResource extends Resource
+final class LancamentoResource extends Resource
 {
-    protected static ?string $model = Lancamento::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
-
-    protected static ?string $modelLabel = 'Lançamentos';
-
-    protected static ?string $navigationGroup = 'Estabelecimento';
-
     private const DINHEIRO = '1';
 
     private const BANCARIO = '0';
@@ -39,6 +33,14 @@ class LancamentoResource extends Resource
     private const MERCADORIAS = '1';
 
     private const OUTROS = '0';
+
+    protected static ?string $model = Lancamento::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+
+    protected static ?string $modelLabel = 'Lançamentos';
+
+    protected static ?string $navigationGroup = 'Estabelecimento';
 
     public static function form(Form $form): Form
     {
@@ -49,20 +51,20 @@ class LancamentoResource extends Resource
                 Radio::make('tipoRecebimento')->label('Tipo de Recebimento')
                     ->options([
                         '1' => 'Dinheiro',
-                        '0' => 'Bancário'
-                ]),
+                        '0' => 'Bancário',
+                    ]),
                 Radio::make('tipoPagamento')->label('Tipo de Pagamento')
                     ->options([
                         '1' => 'Mercadorias',
-                        '0' => 'Outros'
-                ]),
+                        '0' => 'Outros',
+                    ]),
                 DatePicker::make('dataLancamento')->label('Data de Lançamento'),
-                //FileUpload::make('attachment')->label('Comprovante')->preserveFilenames()->deletable(),
-                Hidden::make('user_id')
+                // FileUpload::make('attachment')->label('Comprovante')->preserveFilenames()->deletable(),
+                Hidden::make('user_id'),
             ]);
     }
 
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->select(['lancamentos.*'])
@@ -73,8 +75,7 @@ class LancamentoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->filtersTriggerAction(fn (Tables\Actions\Action $action) =>
-            $action->icon('heroicon-o-adjustments-vertical')
+            ->filtersTriggerAction(fn (Tables\Actions\Action $action) => $action->icon('heroicon-o-adjustments-vertical')
             )
             ->columns([
                 TextColumn::make('recebimento')
@@ -88,7 +89,7 @@ class LancamentoResource extends Resource
                     ->sortable()
                     ->visibleFrom('md'),
                 TextColumn::make('tipoRecebimento')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento
+                    ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->tipoRecebimento === self::DINHEIRO
                         ? 'Dinheiro'
                         : 'Bancário'
                     )
@@ -96,7 +97,7 @@ class LancamentoResource extends Resource
                     ->sortable()
                     ->visibleFrom('md'),
                 TextColumn::make('tipoPagamento')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento
+                    ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->tipoPagamento === self::MERCADORIAS
                         ? 'Mercadorias'
                         : 'Outros'
                     )
@@ -108,9 +109,9 @@ class LancamentoResource extends Resource
                     ->sortable()
                     ->date('d-m-Y'),
                 TextColumn::make('Total')
-                    ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->recebimento - $lancamento->pagamento)
+                    ->getStateUsing(fn (Lancamento $lancamento): int => $lancamento->recebimento - $lancamento->pagamento)
                     ->money('BRL', 0, 'pt_BR')
-                    ->sortable()
+                    ->sortable(),
             ])
             ->filters([
                 Filter::make('Dinheiro')
@@ -156,7 +157,7 @@ class LancamentoResource extends Resource
                     ->formats([
                         ExportFormat::Xlsx,
                     ])
-                    ->fileName(fn (): string => 'lancamentos')
+                    ->fileName(fn (): string => 'lancamentos'),
             ]);
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Widgets;
 
 use App\Models\Conta;
@@ -7,7 +9,7 @@ use App\Models\Lancamento;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class StatsOverview extends BaseWidget
+final class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
@@ -17,11 +19,11 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
             Stat::make('Contas não pagas', Conta::query()
-                    ->where('status', '=', '2')
-                    ->where('user_id', '=', auth()->id())
-                    ->where('created_at', '>=', now()->startOfMonth())
-                    ->where('created_at', '<=', now()->endOfMonth())
-                    ->count()
+                ->where('status', '=', '2')
+                ->where('user_id', '=', auth()->id())
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->count()
             )
                 ->description('Contas não pagas do mês.'),
             Stat::make('Contas pagas', Conta::query()

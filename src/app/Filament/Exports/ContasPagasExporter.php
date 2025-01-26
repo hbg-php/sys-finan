@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Exports;
 
 use App\Models\Conta;
@@ -8,14 +10,17 @@ use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
 use Illuminate\Database\Eloquent\Builder;
 
-class ContasPagasExporter extends Exporter
+use function date;
+
+final class ContasPagasExporter extends Exporter
 {
-    protected static ?string $model = Conta::class;
     private const OPERACIONAL = '1';
 
     private const PAGO = '1';
 
     private const NAO_PAGO = '2';
+
+    protected static ?string $model = Conta::class;
 
     public static function getColumns(): array
     {
@@ -28,29 +33,29 @@ class ContasPagasExporter extends Exporter
                 ->label('Descrição'),
             ExportColumn::make('status')
                 ->label('Status')
-                ->getStateUsing(fn (Conta $conta): string => self::PAGO === $conta->status
+                ->getStateUsing(fn (Conta $conta): string => $conta->status === self::PAGO
                     ? 'Pago'
                     : 'Não pago'
                 ),
             ExportColumn::make('tipo')
                 ->label('Tipo')
-                ->getStateUsing(fn (Conta $conta): string => self::OPERACIONAL === $conta->tipo
+                ->getStateUsing(fn (Conta $conta): string => $conta->tipo === self::OPERACIONAL
                     ? 'Operacional'
                     : 'Não Operacional'
                 ),
             ExportColumn::make('numeroDocumento')->label('Número do Documento'),
             ExportColumn::make('dataVencimento')
                 ->label('Data de Vencimento')
-                ->getStateUsing(fn (Conta $conta): string => \date('d/m/Y', strtotime($conta->dataVencimento))),
+                ->getStateUsing(fn (Conta $conta): string => date('d/m/Y', strtotime($conta->dataVencimento))),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Seu relatório de contas pagas está finalizado e tem ' . number_format($export->successful_rows) . ' ' . str('linha')->plural($export->successful_rows) . ' exportadas.';
+        $body = 'Seu relatório de contas pagas está finalizado e tem '.number_format($export->successful_rows).' '.str('linha')->plural($export->successful_rows).' exportadas.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('linha')->plural($failedRowsCount) . ' falharam ao serem exportadas.';
+            $body .= ' '.number_format($failedRowsCount).' '.str('linha')->plural($failedRowsCount).' falharam ao serem exportadas.';
         }
 
         return $body;

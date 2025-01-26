@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\LancamentoResource\Pages;
 
 use App\Filament\Resources\LancamentoResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditLancamento extends EditRecord
+final class EditLancamento extends EditRecord
 {
     protected static string $resource = LancamentoResource::class;
 

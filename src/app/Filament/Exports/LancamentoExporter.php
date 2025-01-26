@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Exports;
 
 use App\Models\Lancamento;
@@ -7,10 +9,10 @@ use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
 
-class LancamentoExporter extends Exporter
-{
-    protected static ?string $model = Lancamento::class;
+use function date;
 
+final class LancamentoExporter extends Exporter
+{
     private const DINHEIRO = '1';
 
     private const BANCARIO = '2';
@@ -18,6 +20,8 @@ class LancamentoExporter extends Exporter
     private const MERCADORIAS = '1';
 
     private const OUTROS = '0';
+
+    protected static ?string $model = Lancamento::class;
 
     public static function getColumns(): array
     {
@@ -28,31 +32,31 @@ class LancamentoExporter extends Exporter
                 ->label('Pagamento'),
             ExportColumn::make('tipoRecebimento')
                 ->label('Tipo de Recebimento')
-                ->getStateUsing(fn (Lancamento $lancamento): string => self::DINHEIRO === $lancamento->tipoRecebimento
+                ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->tipoRecebimento === self::DINHEIRO
                     ? 'Dinheiro'
                     : 'Bancário'
                 ),
             ExportColumn::make('tipoPagamento')
                 ->label('Tipo de Pagamento')
-                ->getStateUsing(fn (Lancamento $lancamento): string => self::MERCADORIAS === $lancamento->tipoPagamento
+                ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->tipoPagamento === self::MERCADORIAS
                     ? 'Mercadorias'
                     : 'Outros'
                 ),
             ExportColumn::make('dataLancamento')
                 ->label('Data do Lançamento')
-                ->getStateUsing(fn (Lancamento $lancamento): string => \date('d/m/Y', strtotime($lancamento->dataLancamento))),
+                ->getStateUsing(fn (Lancamento $lancamento): string => date('d/m/Y', strtotime($lancamento->dataLancamento))),
             ExportColumn::make('created_at')
                 ->label('Data do Cadastro')
-                ->getStateUsing(fn (Lancamento $lancamento): string => \date('d/m/Y', strtotime($lancamento->created_at))),
+                ->getStateUsing(fn (Lancamento $lancamento): string => date('d/m/Y', strtotime($lancamento->created_at))),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Seu relatório de todos os lançamentos está finalizado e tem ' . number_format($export->successful_rows) . ' ' . str('linha')->plural($export->successful_rows) . ' exportadas.';
+        $body = 'Seu relatório de todos os lançamentos está finalizado e tem '.number_format($export->successful_rows).' '.str('linha')->plural($export->successful_rows).' exportadas.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('linha')->plural($failedRowsCount) . ' failed to export.';
+            $body .= ' '.number_format($failedRowsCount).' '.str('linha')->plural($failedRowsCount).' failed to export.';
         }
 
         return $body;

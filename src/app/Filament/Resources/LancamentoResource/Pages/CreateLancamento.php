@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\LancamentoResource\Pages;
 
 use App\Filament\Resources\LancamentoResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateLancamento extends CreateRecord
+final class CreateLancamento extends CreateRecord
 {
     protected static string $resource = LancamentoResource::class;
 
