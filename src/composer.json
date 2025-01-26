@@ -14,7 +14,6 @@
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
-        "leandrocfe/filament-ptbr-form-fields": "^3.0",
         "pelmered/filament-money-field": "^1.2"
     },
     "require-dev": {
@@ -54,7 +53,10 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "refacto": "rector",
+        "lint": "pint",
+        "test:types": "phpstan analyse --ansi"
     },
     "extra": {
         "laravel": {
