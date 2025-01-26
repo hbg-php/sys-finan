@@ -14,10 +14,63 @@ final class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Contas', Conta::query()->where('user_id', '=', auth()->id())->count())
-                ->description('Todas as contas cadastradas no sistema.')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+            Stat::make('Saldo Total', Conta::query()
+                ->where('user_id', '=', auth()->id())
+                ->sum('valor'))
+            ->description('Saldo total de todas as contas cadastradas.')
+                ->descriptionIcon('heroicon-m-credit-card')
+                ->color('warning'),
+
+            Stat::make('Total Recebido em Dinheiro', Lancamento::query()
+                ->where('user_id', '=', auth()->id())
+                ->where('tipoRecebimento', '=', '1')
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->sum('recebimento'))
+                ->description('Total de recebimentos do mês.')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('primary'),
+
+            Stat::make('Total Recebido em Transação Bancária', Lancamento::query()
+                ->where('user_id', '=', auth()->id())
+                ->where('tipoRecebimento', '=', '0')
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->sum('recebimento'))
+                ->description('Total de recebimentos do mês.')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('primary'),
+
+            Stat::make('Total Pago em Mercadorias', Lancamento::query()
+                ->where('user_id', '=', auth()->id())
+                ->where('tipoPagamento', '=', '1')
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->sum('pagamento'))
+                ->description('Total de pagamentos do mês.')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('danger'),
+
+            Stat::make('Total Pago em Outros', Lancamento::query()
+                ->where('user_id', '=', auth()->id())
+                ->where('tipoPagamento', '=', '0')
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->sum('pagamento'))
+                ->description('Total de pagamentos do mês.')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('danger'),
+
+            Stat::make('Contas Vencendo', Conta::query()
+                ->where('user_id', '=', auth()->id())
+                ->where('status', '=', '2') // Status de contas não pagas
+                ->where('dataVencimento', '>=', now()->startOfMonth())
+                ->where('dataVencimento', '<=', now()->endOfMonth())
+                ->count())
+                ->description('Contas com vencimento no próximo mês.')
+                ->descriptionIcon('heroicon-m-calendar')
+                ->color('warning'),
+
             Stat::make('Contas não pagas', Conta::query()
                 ->where('status', '=', '2')
                 ->where('user_id', '=', auth()->id())
