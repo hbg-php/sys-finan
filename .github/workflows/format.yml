@@ -34,17 +34,6 @@ jobs:
           cd src
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: dependencies-php-${{ matrix.php }}-os-${{ matrix.os }}-version-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
-          restore-keys: |
-            dependencies-php-${{ matrix.php }}-os-${{ matrix.os }}-version-${{ matrix.dependency-version }}-composer-
-            dependencies-php-${{ matrix.php }}-os-${{ matrix.os }}-version-
-            dependencies-php-${{ matrix.php }}-os-
-            dependencies-
-
       - name: Install Composer dependencies
         run: cd src && composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
