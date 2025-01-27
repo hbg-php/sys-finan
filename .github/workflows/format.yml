@@ -43,4 +43,4 @@ jobs:
         run: cd src && composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
       - name: Coding Style Checks
-        run: composer lint
+        run: composer test:lint
