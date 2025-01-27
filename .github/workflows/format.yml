@@ -16,7 +16,6 @@ jobs:
     name: Formats P${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -35,7 +34,11 @@ jobs:
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Install Composer dependencies
-        run: cd src && composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
+        run: |
+          cd src
+          composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
       - name: Coding Style Checks
-        run: composer test:lint
+        run: |
+          cd src
+          composer test:lint
