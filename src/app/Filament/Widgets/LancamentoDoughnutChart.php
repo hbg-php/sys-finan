@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Widgets;
 
 use App\Models\Lancamento;
 use Filament\Widgets\ChartWidget;
 
-class LancamentoChart extends ChartWidget
+final class LancamentoChart extends ChartWidget
 {
     protected static ?string $heading = 'Chart';
+
     protected static ?string $modelLabel = 'Gráficos Lançamentos';
 
     protected function getData(): array
@@ -60,9 +63,9 @@ class LancamentoChart extends ChartWidget
                         '#34A1D1',
                         '#FFB94D',
                         '#4BBFBF',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
