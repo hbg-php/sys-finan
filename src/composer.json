@@ -14,6 +14,7 @@
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
+        "leandrocfe/filament-ptbr-form-fields": "^3.1",
         "pelmered/filament-money-field": "^1.2"
     },
     "require-dev": {
@@ -56,7 +57,8 @@
         ],
         "refacto": "rector",
         "lint": "pint",
-        "test:types": "phpstan analyse --ansi"
+        "test:lint": "pint --test",
+        "test:types": "phpstan analyse --ansi --memory-limit=1G"
     },
     "extra": {
         "laravel": {
