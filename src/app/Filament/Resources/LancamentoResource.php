@@ -109,7 +109,7 @@ final class LancamentoResource extends Resource
                     ->sortable()
                     ->date('d-m-Y'),
                 TextColumn::make('Total')
-                    ->getStateUsing(fn (Lancamento $lancamento): int => $lancamento->recebimento - $lancamento->pagamento)
+                    ->getStateUsing(fn (Lancamento $lancamento): float => $lancamento->recebimento - $lancamento->pagamento)
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable(),
             ])
