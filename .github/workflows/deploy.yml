@@ -18,8 +18,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
 
+      - name: Create SSH private key file
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/sysf.pem
+          chmod 600 ~/.ssh/sysf.pem
+
       - name: Deploy to EC2
         run: |
+          ls -l ~/.ssh
+          
           ssh -i ~/.ssh/sysf.pem -o StrictHostKeyChecking=no ubuntu@ec2-52-1-182-237.compute-1.amazonaws.com << 'EOF'
             cd /var/www/sys-finan/
             git pull origin master
