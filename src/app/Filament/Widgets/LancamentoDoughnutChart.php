@@ -7,7 +7,7 @@ namespace App\Filament\Widgets;
 use App\Models\Lancamento;
 use Filament\Widgets\ChartWidget;
 
-final class LancamentoChart extends ChartWidget
+final class LancamentoDoughnutChart extends ChartWidget
 {
     protected static ?string $heading = 'Chart';
 
