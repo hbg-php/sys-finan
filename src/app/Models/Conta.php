@@ -18,7 +18,8 @@ class Conta extends Model
         'tipo', 
         'numeroDocumento', 
         'dataPagamento', 
-        'dataVencimento'
+        'dataVencimento',
+        'imagem',
     ];
 
     public function user(): BelongsTo

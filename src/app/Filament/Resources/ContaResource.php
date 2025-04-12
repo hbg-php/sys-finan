@@ -11,6 +11,7 @@ use App\Models\Conta;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
@@ -64,9 +65,17 @@ final class ContaResource extends Resource
                     ->options([
                         '1' => 'Pago',
                         '2' => 'Não pago',
-                    ]),
+                    ])
+                    ->reactive(),
                 DatePicker::make('dataPagamento')->label('Data do Pagamento'),
                 DatePicker::make('dataVencimento')->label('Data do Vencimento'),
+                FileUpload::make('imagem')
+                    ->label('Comprovante')
+                    ->image()
+                    ->directory('uploads/comprovantes')
+                    ->maxSize(1024)
+                    ->required(false)
+                    ->visible(fn (callable $get) => $get('status') === self::PAGO),
                 Hidden::make('user_id'),
             ]);
     }
