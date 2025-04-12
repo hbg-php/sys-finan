@@ -13,116 +13,92 @@ final class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        $userId = auth()->id();
+        $currentMonthStart = now()->startOfMonth();
+        $currentMonthEnd = now()->endOfMonth();
+
+        $saldoTotal = Conta::where('user_id', $userId)->sum('valor');
+        $totalRecebidoDinheiro = Lancamento::where('user_id', $userId)
+            ->where('tipoRecebimento', '1')
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->sum('recebimento');
+        $totalRecebidoBancario = Lancamento::where('user_id', $userId)
+            ->where('tipoRecebimento', '0')
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->sum('recebimento');
+        $totalPagoMercadorias = Lancamento::where('user_id', $userId)
+            ->where('tipoPagamento', '1')
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->sum('pagamento');
+        $totalPagoOutros = Lancamento::where('user_id', $userId)
+            ->where('tipoPagamento', '0')
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->sum('pagamento');
+        $contasVencendo = Conta::where('user_id', $userId)
+            ->where('status', '2')
+            ->whereBetween('dataVencimento', [$currentMonthStart, $currentMonthEnd])
+            ->count();
+        $contasNaoPagas = Conta::where('user_id', $userId)
+            ->where('status', '2')
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->count();
+        $contasPagas = Conta::where('user_id', $userId)
+            ->where('status', '1')
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->count();
+        $totalLancamentos = Lancamento::where('user_id', $userId)->count();
+
+        $saldoTotalFormatado = 'R$ ' . number_format($saldoTotal, 2, ',', '.');
+        $totalRecebidoDinheiroFormatado = 'R$ ' . number_format($totalRecebidoDinheiro, 2, ',', '.');
+        $totalRecebidoBancarioFormatado = 'R$ ' . number_format($totalRecebidoBancario, 2, ',', '.');
+        $totalPagoMercadoriasFormatado = 'R$ ' . number_format($totalPagoMercadorias, 2, ',', '.');
+        $totalPagoOutrosFormatado = 'R$ ' . number_format($totalPagoOutros, 2, ',', '.');
+
         return [
-            Stat::make('Saldo Total', Conta::query()
-                ->where('user_id', '=', auth()->id())
-                ->sum('valor'))
-            ->description('Saldo total de todas as contas cadastradas.')
+            Stat::make('Saldo Total', $saldoTotalFormatado)
+                ->description('Saldo total de todas as contas cadastradas.')
                 ->descriptionIcon('heroicon-m-credit-card')
                 ->color('warning'),
 
-            Stat::make('Total Recebido em Dinheiro', Lancamento::query()
-                ->where('user_id', '=', auth()->id())
-                ->where('tipoRecebimento', '=', '1')
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->sum('recebimento'))
+            Stat::make('Total Recebido em Dinheiro', $totalRecebidoDinheiroFormatado)
                 ->description('Total de recebimentos do mês.')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('primary'),
 
-            Stat::make('Total Recebido em Transação Bancária', Lancamento::query()
-                ->where('user_id', '=', auth()->id())
-                ->where('tipoRecebimento', '=', '0')
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->sum('recebimento'))
+            Stat::make('Total Recebido em Transação Bancária', $totalRecebidoBancarioFormatado)
                 ->description('Total de recebimentos do mês.')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('primary'),
 
-            Stat::make('Total Pago em Mercadorias', Lancamento::query()
-                ->where('user_id', '=', auth()->id())
-                ->where('tipoPagamento', '=', '1')
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->sum('pagamento'))
+            Stat::make('Total Pago em Mercadorias', $totalPagoMercadoriasFormatado)
                 ->description('Total de pagamentos do mês.')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('danger'),
 
-            Stat::make('Total Pago em Outros', Lancamento::query()
-                ->where('user_id', '=', auth()->id())
-                ->where('tipoPagamento', '=', '0')
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->sum('pagamento'))
+            Stat::make('Total Pago em Outros', $totalPagoOutrosFormatado)
                 ->description('Total de pagamentos do mês.')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('danger'),
 
-            Stat::make('Contas Vencendo', Conta::query()
-                ->where('user_id', '=', auth()->id())
-                ->where('status', '=', '2') // Status de contas não pagas
-                ->where('dataVencimento', '>=', now()->startOfMonth())
-                ->where('dataVencimento', '<=', now()->endOfMonth())
-                ->count())
+            Stat::make('Contas Vencendo', $contasVencendo)
                 ->description('Contas com vencimento no próximo mês.')
                 ->descriptionIcon('heroicon-m-calendar')
                 ->color('warning'),
 
-            Stat::make('Contas não pagas', Conta::query()
-                ->where('status', '=', '2')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count()
-            )
-                ->description('Contas não pagas do mês.'),
-            Stat::make('Contas pagas', Conta::query()
-                ->where('status', '=', '1')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count()
-            )
-                ->description('Contas pagas do mês.'),
-            Stat::make('Lançamentos', Lancamento::query()->where('user_id', '=', auth()->id())->count())
-                ->description('Todos as lançamentos cadastrados no sistema.')
+            Stat::make('Contas Não Pagas', $contasNaoPagas)
+                ->description('Contas não pagas do mês.')
+                ->descriptionIcon('heroicon-m-calendar')
+                ->color('danger'),
+
+            Stat::make('Contas Pagas', $contasPagas)
+                ->description('Contas pagas do mês.')
+                ->descriptionIcon('heroicon-m-calendar')
+                ->color('success'),
+
+            Stat::make('Total de Lançamentos', $totalLancamentos)
+                ->description('Todos os lançamentos cadastrados no sistema.')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
-            Stat::make('Dinheiro', Lancamento::query()
-                ->where('tipoRecebimento', '=', '1')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count()
-            )
-                ->description('Lançamentos recebidos em dinheiro.'),
-            Stat::make('Bancário', Lancamento::query()
-                ->where('tipoRecebimento', '=', '0')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count()
-            )
-                ->description('Lançamentos recebidos através de transação bancária.'),
-            Stat::make('Mercadoria', Lancamento::query()
-                ->where('tipoPagamento', '=', '1')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count()
-            )
-                ->description('Mercadorias pagas.'),
-            Stat::make('Outros', Lancamento::query()
-                ->where('tipoPagamento', '=', '0')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count()
-            )
-                ->description('Outros pagamentos.'),
         ];
     }
 }
