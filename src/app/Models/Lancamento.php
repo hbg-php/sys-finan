@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Lancamento extends Model
+final class Lancamento extends Model
 {
     use HasFactory;
 
@@ -16,7 +18,7 @@ class Lancamento extends Model
         'tipoRecebimento',
         'tipoPagamento',
         'dataLancamento',
-        'user_id'
+        'user_id',
     ];
 
     public function user(): BelongsTo

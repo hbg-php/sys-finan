@@ -14,6 +14,6 @@ final class LancamentoSeeder extends Seeder
      */
     public function run(): void
     {
-        Lancamento::factory()->count(20)->create();
+        Lancamento::factory()->count(50)->create();
     }
 }

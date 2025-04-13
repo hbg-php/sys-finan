@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Conta;
+use App\Models\Cliente;
 use Illuminate\Database\Seeder;
 
-final class ContaSeeder extends Seeder
+final class ClienteSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Conta::factory()->count(50)->create();
+        Cliente::factory()->count(20)->create();
     }
 }
