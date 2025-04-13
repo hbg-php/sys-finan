@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Lancamento;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class LancamentoSeeder extends Seeder
+final class LancamentoSeeder extends Seeder
 {
     /**
      * Run the database seeds.

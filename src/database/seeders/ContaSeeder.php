@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Conta;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ContaSeeder extends Seeder
+final class ContaSeeder extends Seeder
 {
     /**
      * Run the database seeds.

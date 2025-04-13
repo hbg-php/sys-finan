@@ -154,7 +154,7 @@ final class ContaResource extends Resource
                             ->currencyMask('.', ',', 2),
                     ])
                     ->query(function (Builder $query, $data): Builder {
-                        if (!empty($data['valor'])) {
+                        if (! empty($data['valor'])) {
                             $valorFloat = (float) str_replace(',', '.', $data['valor']);
 
                             return $query

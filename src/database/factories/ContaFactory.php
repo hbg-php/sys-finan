@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Conta;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Conta>
  */
-class ContaFactory extends Factory
+final class ContaFactory extends Factory
 {
     protected $model = Conta::class;
-    
+
     /**
      * Define the model's default state.
      *
@@ -21,15 +22,15 @@ class ContaFactory extends Factory
     public function definition(): array
     {
         return [
-            'fornecedor' => $this->faker->company(), // Nome do fornecedor
-            'valor' => $this->faker->randomFloat(2, 100, 10000), // Valor entre 100 e 10.000
-            'descricao' => $this->faker->sentence(), // Descrição opcional
-            'status' => $this->faker->randomElement(['1', '2']), // 1 = Pago, 2 = Não pago
-            'tipo' => $this->faker->randomElement(['1', '2']), // 1 = Operacional, 2 = Não Operacional
-            'numeroDocumento' => $this->faker->unique()->numerify('DOC-#####'), // Documento único
-            'dataPagamento' => $this->faker->optional()->dateTimeBetween('-1 month', 'now'), // Data de pagamento opcional
-            'dataVencimento' => $this->faker->dateTimeBetween('now', '+1 month'), // Data de vencimento futura
-            'user_id' => 1, // Relaciona com um usuário
+            'fornecedor' => $this->faker->company(),
+            'valor' => $this->faker->randomFloat(2, 100, 10000),
+            'descricao' => $this->faker->sentence(),
+            'status' => $this->faker->randomElement(['1', '2']),
+            'tipo' => $this->faker->randomElement(['1', '2']),
+            'numeroDocumento' => $this->faker->unique()->numerify('DOC-#####'),
+            'dataPagamento' => $this->faker->optional()->dateTimeBetween('-1 month', 'now'),
+            'dataVencimento' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'user_id' => 1,
         ];
     }
 }

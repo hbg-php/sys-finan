@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Auth;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\Register;
 
-class CustomRegister extends Register
+final class CustomRegister extends Register
 {
     /**
      * Create a new class instance.
@@ -14,11 +16,6 @@ class CustomRegister extends Register
     public function __construct()
     {
         //
-    }
-
-    protected function handleRegistration(array $data): \Illuminate\Database\Eloquent\Model
-    {
-        return $this->getUserModel()::create($data); 
     }
 
     public function form(Form $form): Form
@@ -57,5 +54,10 @@ class CustomRegister extends Register
                     ->extraInputAttributes(['tabindex' => 5]),
             ])
             ->statePath('data');
+    }
+
+    protected function handleRegistration(array $data): \Illuminate\Database\Eloquent\Model
+    {
+        return $this->getUserModel()::create($data);
     }
 }
