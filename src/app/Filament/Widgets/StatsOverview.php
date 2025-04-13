@@ -48,11 +48,11 @@ final class StatsOverview extends BaseWidget
             ->count();
         $totalLancamentos = Lancamento::where('user_id', $userId)->count();
 
-        $saldoTotalFormatado = 'R$ ' . number_format($saldoTotal, 2, ',', '.');
-        $totalRecebidoDinheiroFormatado = 'R$ ' . number_format($totalRecebidoDinheiro, 2, ',', '.');
-        $totalRecebidoBancarioFormatado = 'R$ ' . number_format($totalRecebidoBancario, 2, ',', '.');
-        $totalPagoMercadoriasFormatado = 'R$ ' . number_format($totalPagoMercadorias, 2, ',', '.');
-        $totalPagoOutrosFormatado = 'R$ ' . number_format($totalPagoOutros, 2, ',', '.');
+        $saldoTotalFormatado = 'R$ '.number_format($saldoTotal, 2, ',', '.');
+        $totalRecebidoDinheiroFormatado = 'R$ '.number_format($totalRecebidoDinheiro, 2, ',', '.');
+        $totalRecebidoBancarioFormatado = 'R$ '.number_format($totalRecebidoBancario, 2, ',', '.');
+        $totalPagoMercadoriasFormatado = 'R$ '.number_format($totalPagoMercadorias, 2, ',', '.');
+        $totalPagoOutrosFormatado = 'R$ '.number_format($totalPagoOutros, 2, ',', '.');
 
         return [
             Stat::make('Saldo Total', $saldoTotalFormatado)
