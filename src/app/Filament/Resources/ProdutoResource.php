@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ProdutoExporter;
 use App\Filament\Resources\ProdutoResource\Pages;
 use App\Models\Produto;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -62,11 +64,11 @@ final class ProdutoResource extends Resource
                     ->sortable(),
                 TextColumn::make('descricao')
                     ->label('Descrição')
-                    ->limit(50) // Limita o texto exibido na tabela
-                    ->wrap(), // Quebra o texto se necessário
+                    ->limit(50)
+                    ->wrap(),
                 TextColumn::make('preco')
                     ->label('Preço')
-                    ->money('BRL', true) // Formata como moeda brasileira
+                    ->money('BRL', 1)
                     ->sortable(),
                 TextColumn::make('quantidade_estoque')
                     ->label('Quantidade em Estoque')
@@ -85,11 +87,29 @@ final class ProdutoResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(function (Tables\Actions\Action $action) {
+                        $action->modalDescription('Tem certeza que deseja excluir este produto?');
+                        $action->modalHeading('Excluir Produto');
+
+                        return $action;
+                    })
+                    ->hiddenLabel(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                Tables\Actions\ExportAction::make('exportarProdutos')
+                    ->exporter(ProdutoExporter::class)
+                    ->label('Exportar Produtos')
+                    ->formats([
+                        ExportFormat::Csv,
+                        ExportFormat::Xlsx,
+                    ])
+                    ->fileName(fn (): string => 'produtos_exportados'),
             ]);
     }
 
