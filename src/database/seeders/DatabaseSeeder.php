@@ -18,6 +18,7 @@ final class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ContaSeeder::class,
             LancamentoSeeder::class,
+            ClienteSeeder::class,
         ]);
     }
 }
