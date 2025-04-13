@@ -75,8 +75,7 @@ final class LancamentoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->filtersTriggerAction(fn (Tables\Actions\Action $action) => $action->icon('heroicon-o-adjustments-vertical')
-            )
+            ->filtersTriggerAction(fn (Tables\Actions\Action $action) => $action->icon('heroicon-o-adjustments-vertical'))
             ->columns([
                 TextColumn::make('recebimento')
                     ->label('Recebimento')

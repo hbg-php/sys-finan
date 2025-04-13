@@ -26,7 +26,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
-use Leandrocfe\FilamentPtbrFormFields\Money;
 
 final class ContaResource extends Resource
 {
