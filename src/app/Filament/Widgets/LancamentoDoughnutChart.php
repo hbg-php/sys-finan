@@ -9,61 +9,47 @@ use Filament\Widgets\ChartWidget;
 
 final class LancamentoDoughnutChart extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Gráficos Lançamentos';
 
     protected static ?string $modelLabel = 'Gráficos Lançamentos';
 
     protected function getData(): array
     {
-        $data = [
-            'dinheiro' => Lancamento::query()
-                ->where('tipoRecebimento', '=', '1')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count(),
+        $userId = auth()->id();
+        $currentMonthStart = now()->startOfMonth();
+        $currentMonthEnd = now()->endOfMonth();
 
-            'bancario' => Lancamento::query()
-                ->where('tipoRecebimento', '=', '0')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count(),
-
-            'mercadoria' => Lancamento::query()
-                ->where('tipoPagamento', '=', '1')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count(),
-
-            'outros' => Lancamento::query()
-                ->where('tipoPagamento', '=', '0')
-                ->where('user_id', '=', auth()->id())
-                ->where('created_at', '>=', now()->startOfMonth())
-                ->where('created_at', '<=', now()->endOfMonth())
-                ->count(),
+        $types = [
+            'dinheiro' => ['tipoRecebimento', '1', '#FF6384', '#FF4372'],
+            'bancario' => ['tipoRecebimento', '0', '#36A2EB', '#34A1D1'],
+            'mercadoria' => ['tipoPagamento', '1', '#FFCE56', '#FFB94D'],
+            'outros' => ['tipoPagamento', '0', '#4BC0C0', '#4BBFBF'],
         ];
 
-        $labels = ['Dinheiro', 'Bancário', 'Mercadoria', 'Outros'];
+        $data = [];
+        $backgroundColors = [];
+        $hoverBackgroundColors = [];
+        $labels = [];
+
+        foreach ($types as $label => [$column, $value, $bgColor, $hoverColor]) {
+            $data[] = Lancamento::query()
+                ->where($column, '=', $value)
+                ->where('user_id', '=', $userId)
+                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                ->count();
+
+            $labels[] = ucfirst($label);
+            $backgroundColors[] = $bgColor;
+            $hoverBackgroundColors[] = $hoverColor;
+        }
 
         return [
             'labels' => $labels,
             'datasets' => [
                 [
-                    'data' => array_values($data),
-                    'backgroundColor' => [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0',
-                    ],
-                    'hoverBackgroundColor' => [
-                        '#FF4372',
-                        '#34A1D1',
-                        '#FFB94D',
-                        '#4BBFBF',
-                    ],
+                    'data' => $data,
+                    'backgroundColor' => $backgroundColors,
+                    'hoverBackgroundColor' => $hoverBackgroundColors,
                 ],
             ],
         ];

@@ -115,13 +115,33 @@ final class LancamentoResource extends Resource
             ])
             ->filters([
                 Filter::make('Dinheiro')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::DINHEIRO)),
+                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::DINHEIRO))
+                    ->label('Recebimento em Dinheiro'),
                 Filter::make('Bancário')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::BANCARIO)),
+                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::BANCARIO))
+                    ->label('Recebimento Bancário'),
                 Filter::make('Mercadoria')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::MERCADORIAS)),
+                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::MERCADORIAS))
+                    ->label('Pagamento em Mercadorias'),
                 Filter::make('Outros')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::OUTROS)),
+                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::OUTROS))
+                    ->label('Outros'),
+                Filter::make('Data de Lançamento')
+                    ->form([
+                        DatePicker::make('dataLancamentoInicio')->label('Data Inicial'),
+                        DatePicker::make('dataLancamentoFim')->label('Data Final'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['dataLancamentoInicio'] ?? null,
+                                fn (Builder $query, $date) => $query->whereDate('dataLancamento', '>=', $date)
+                            )
+                            ->when(
+                                $data['dataLancamentoFim'] ?? null,
+                                fn (Builder $query, $date) => $query->whereDate('dataLancamento', '<=', $date)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->hiddenLabel(),

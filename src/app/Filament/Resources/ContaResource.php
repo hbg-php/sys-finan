@@ -57,14 +57,14 @@ final class ContaResource extends Resource
                 Radio::make('tipo')
                     ->label('Tipo')
                     ->options([
-                        '1' => 'Operacional',
-                        '2' => 'Não Operacional',
+                        self::OPERACIONAL => 'Operacional',
+                        self::NAO_OPERACIONAL => 'Não Operacional',
                     ]),
                 Radio::make('status')
                     ->label('Status')
                     ->options([
-                        '1' => 'Pago',
-                        '2' => 'Não pago',
+                        self::PAGO => 'Pago',
+                        self::NAO_PAGO => 'Não pago',
                     ])
                     ->reactive(),
                 DatePicker::make('dataPagamento')->label('Data do Pagamento'),
@@ -105,7 +105,6 @@ final class ContaResource extends Resource
                     ->visibleFrom('md'),
                 TextColumn::make('valor')
                     ->label('Valor'),
-                /* ->money('BRL', 0, 'pt_BR'), */
                 TextColumn::make('descricao')
                     ->label('Descrição')
                     ->visibleFrom('md'),
