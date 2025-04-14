@@ -17,5 +17,11 @@ final class Produto extends Model
         'preco',
         'quantidade_estoque',
         'codigo_barras',
+        'categoria_id',
     ];
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class);
+    }
 }

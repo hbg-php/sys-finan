@@ -16,4 +16,9 @@ final class Categoria extends Model
         'descricao',
         'ativo',
     ];
+
+    public function produtos()
+    {
+        return $this->hasMany(Produto::class);
+    }
 }

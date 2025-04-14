@@ -24,6 +24,7 @@ final class ProdutoFactory extends Factory
             'preco' => $this->faker->randomFloat(2, 10, 1000),
             'quantidade_estoque' => $this->faker->numberBetween(0, 100),
             'codigo_barras' => $this->faker->unique()->numerify('##########'),
+            'categoria_id' => $this->faker->numberBetween(1, 5),
         ];
     }
 }

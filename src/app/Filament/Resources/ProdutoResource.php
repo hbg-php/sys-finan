@@ -8,6 +8,7 @@ use App\Filament\Exports\ProdutoExporter;
 use App\Filament\Resources\ProdutoResource\Pages;
 use App\Models\Produto;
 use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -42,6 +43,10 @@ final class ProdutoResource extends Resource
                     ->numeric()
                     ->prefix('R$')
                     ->currencyMask('.', ',', 2),
+                Select::make('categoria_id')
+                    ->label('Categoria')
+                    ->relationship('categoria', 'nome')
+                    ->required(),
                 TextInput::make('quantidade_estoque')
                     ->label('Quantidade em Estoque')
                     ->numeric()
@@ -58,6 +63,10 @@ final class ProdutoResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('categoria.nome')
+                    ->label('Categoria')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('nome')
                     ->label('Nome')
                     ->searchable()

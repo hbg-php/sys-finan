@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
+            $table->boolean('is_admin')->default(false);
             $table->string('name');
             $table->string('cnpj')->unique();
             $table->string('razaoSocial')->unique();
