@@ -14,7 +14,7 @@ use Filament\Tables\Table;
 final class CategoriaResource extends Resource
 {
     protected static ?string $model = Categoria::class;
-    
+
     protected static ?string $modelLabel = 'Categorias';
 
     protected static ?string $navigationGroup = 'Estabelecimento';
@@ -25,8 +25,20 @@ final class CategoriaResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                \Filament\Forms\Components\TextInput::make('nome')
+                    ->label('Nome')
+                    ->required()
+                    ->maxLength(255),
+
+                \Filament\Forms\Components\Textarea::make('descricao')
+                    ->label('Descrição')
+                    ->maxLength(500)
+                    ->nullable(),
+
+                \Filament\Forms\Components\Toggle::make('ativo')
+                    ->label('Ativo')
+                    ->default(true),
+                ]);
     }
 
     public static function table(Table $table): Table
@@ -64,7 +76,7 @@ final class CategoriaResource extends Resource
                     ->label('Atualizado em')
                     ->date('d/m/Y')
                     ->sortable(),
-                ])
+            ])
             ->filters([
                 //
             ])
