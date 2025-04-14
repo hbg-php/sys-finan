@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoriaResource\Pages;
-use App\Filament\Resources\CategoriaResource\RelationManagers;
 use App\Models\Categoria;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CategoriaResource extends Resource
+final class CategoriaResource extends Resource
 {
     protected static ?string $model = Categoria::class;
+    
+    protected static ?string $modelLabel = 'Categorias';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Estabelecimento';
+
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     public static function form(Form $form): Form
     {
@@ -31,8 +33,38 @@ class CategoriaResource extends Resource
     {
         return $table
             ->columns([
-                //
-            ])
+                Tables\Columns\TextColumn::make('nome')
+                    ->label('Nome')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('descricao')
+                    ->label('Descrição')
+                    ->limit(50)
+                    ->wrap(),
+
+                Tables\Columns\IconColumn::make('ativo')
+                    ->label('Ativo')
+                    ->sortable()
+                    ->icon(fn (int $state): string => match ($state) {
+                        1 => 'heroicon-o-check-circle',
+                        0 => 'heroicon-o-x-circle',
+                    })
+                    ->color(fn (int $state): string => match ($state) {
+                        1 => 'success',
+                        0 => 'danger',
+                    }),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->date('d/m/Y')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Atualizado em')
+                    ->date('d/m/Y')
+                    ->sortable(),
+                ])
             ->filters([
                 //
             ])
