@@ -213,20 +213,9 @@ final class ContaResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\BulkAction::make('Pdf')
-                        ->icon('heroicon-m-arrow-down-tray')
-                        ->openUrlInNewTab()
-                        ->deselectRecordsAfterCompletion()
-                        ->action(function (Collection $contas) {
-                            return response()->streamDownload(function () use ($contas) {
-                                echo Pdf::loadHTML(
-                                    Blade::render('contas-pdf', ['contas' => $contas])
-                                )->stream();
-                            }, 'contas.pdf');
-                        }),
+                    Tables\Actions\DeleteBulkAction::make(),                    
                 ]),
-            ])->headerActions([
+            ])/* ->headerActions([
                 ExportAction::make('relatorioContasNaoPagas')
                     ->exporter(ContasNaoPagasExporter::class)
                     ->label('Relatório Contas Não Pagas')
@@ -241,7 +230,7 @@ final class ContaResource extends Resource
                         ExportFormat::Xlsx,
                     ])
                     ->fileName(fn (): string => 'contas_pagas'),
-            ]);
+            ]) */;
     }
 
     public static function getRelations(): array
