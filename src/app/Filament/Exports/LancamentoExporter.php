@@ -47,7 +47,7 @@ final class LancamentoExporter extends Exporter
                 ->getStateUsing(fn (Lancamento $lancamento): string => date('d/m/Y', strtotime($lancamento->dataLancamento))),
             ExportColumn::make('created_at')
                 ->label('Data do Cadastro')
-                ->getStateUsing(fn (Lancamento $lancamento): string => date('d/m/Y', strtotime($lancamento->created_at))),
+                ->getStateUsing(fn (Lancamento $lancamento): string => $lancamento->created_at->format('d/m/Y')),
         ];
     }
 
