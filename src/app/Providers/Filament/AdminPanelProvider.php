@@ -44,12 +44,10 @@ final class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            
             ->widgets([
-                //TipoPagamentoPieChart::class,
                 ReceitaDespesaBarChart::class,
                 SaldoLineChart::class,
-                //RecebimentosStackedBarChart::class,
                 FluxoCaixaAreaChart::class,
             ])
             ->middleware([
