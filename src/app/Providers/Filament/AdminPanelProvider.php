@@ -46,10 +46,10 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                TipoPagamentoPieChart::class,
+                //TipoPagamentoPieChart::class,
                 ReceitaDespesaBarChart::class,
                 SaldoLineChart::class,
-                RecebimentosStackedBarChart::class,
+                //RecebimentosStackedBarChart::class,
                 FluxoCaixaAreaChart::class,
             ])
             ->middleware([
