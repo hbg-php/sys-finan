@@ -8,7 +8,6 @@ use App\Filament\Exports\ContasNaoPagasExporter;
 use App\Filament\Exports\ContasPagasExporter;
 use App\Filament\Resources\ContaResource\Pages;
 use App\Models\Conta;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -24,8 +23,6 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Blade;
 
 final class ContaResource extends Resource
 {
@@ -207,7 +204,7 @@ final class ContaResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),                    
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])/* ->headerActions([
                 ExportAction::make('relatorioContasNaoPagas')

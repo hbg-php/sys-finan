@@ -7,10 +7,8 @@ namespace App\Providers\Filament;
 use App\Filament\Auth\CustomRegister;
 use App\Filament\Auth\Login;
 use App\Filament\Widgets\FluxoCaixaAreaChart;
-use App\Filament\Widgets\RecebimentosStackedBarChart;
 use App\Filament\Widgets\ReceitaDespesaBarChart;
 use App\Filament\Widgets\SaldoLineChart;
-use App\Filament\Widgets\TipoPagamentoPieChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -44,7 +42,7 @@ final class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            
+
             ->widgets([
                 ReceitaDespesaBarChart::class,
                 SaldoLineChart::class,
