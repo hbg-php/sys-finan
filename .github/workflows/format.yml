@@ -39,6 +39,7 @@ jobs:
           composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
       - name: Coding Style Checks
+        if: matrix.dependency-version != 'prefer-lowest'
         run: |
           cd src
           composer test:lint
