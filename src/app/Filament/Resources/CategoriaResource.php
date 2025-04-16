@@ -38,7 +38,7 @@ final class CategoriaResource extends Resource
                 \Filament\Forms\Components\Toggle::make('ativo')
                     ->label('Ativo')
                     ->default(true),
-                ]);
+            ]);
     }
 
     public static function table(Table $table): Table
