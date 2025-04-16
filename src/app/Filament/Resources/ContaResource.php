@@ -99,14 +99,8 @@ final class ContaResource extends Resource
                     ->label('Fornecedor')
                     ->searchable()
                     ->visibleFrom('md'),
-                TextColumn::make('numeroDocumento')
-                    ->label('Número do Documento')
-                    ->visibleFrom('md'),
                 TextColumn::make('valor')
                     ->label('Valor'),
-                TextColumn::make('descricao')
-                    ->label('Descrição')
-                    ->visibleFrom('md'),
                 TextColumn::make('tipo')
                     ->getStateUsing(fn (Conta $conta): string => $conta->tipo === self::OPERACIONAL
                         ? 'Operacional'
