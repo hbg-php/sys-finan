@@ -8,6 +8,7 @@ use App\Filament\Resources\PagamentoResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 
 final class CreatePagamento extends CreateRecord
 {
@@ -35,10 +36,18 @@ final class CreatePagamento extends CreateRecord
         return parent::getCreateFormAction()->label('Pagar');
     }
 
+    protected function handleRecordCreation(array $data): Model
+    {
+        dd($data);
+
+        return parent::handleRecordCreation($data);
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['dataPagamento'] = now();
-        $data['status'] = '1';
+        $data['status'] = 1;
+        $data['tipo_pagamento'] = 3;
 
         return $data;
     }

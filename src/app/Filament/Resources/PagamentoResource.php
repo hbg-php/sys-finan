@@ -46,6 +46,11 @@ final class PagamentoResource extends Resource
                     ->rule(['digits:16'])
                     ->placeholder('Digite o número do cartão.'),
 
+                TextInput::make('nomeCartao')
+                    ->label('Nome do Titular')
+                    ->required()
+                    ->placeholder('Digite o nome do titular.'),
+
                 TextInput::make('codigoCVV')
                     ->label('Código de Segurança (CVV)')
                     ->required()
