@@ -37,14 +37,19 @@ final class PagamentoResource extends Resource
                         }
                         $conta = Conta::find($contaId);
 
-                        return $conta ? 'R$ '.number_format($conta->valor, 2, ',', '.') : 'Conta não encontrada';
+                        return $conta ? 'R$ '.number_format((float) $conta->valor, 2, ',', '.') : 'Conta não encontrada';
                     })->columnSpan('full'),
 
-                TextInput::make('numCartao')
+                TextInput::make('numero_cartao')
                     ->label('Número do Cartão')
                     ->required()
                     ->rule(['digits:16'])
                     ->placeholder('Digite o número do cartão.'),
+
+                TextInput::make('nome_titular_cartao')
+                    ->label('Nome do Titular')
+                    ->required()
+                    ->placeholder('Digite o nome do titular.'),
 
                 TextInput::make('codigoCVV')
                     ->label('Código de Segurança (CVV)')
