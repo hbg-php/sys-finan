@@ -40,13 +40,13 @@ final class PagamentoResource extends Resource
                         return $conta ? 'R$ '.number_format((float) $conta->valor, 2, ',', '.') : 'Conta não encontrada';
                     })->columnSpan('full'),
 
-                TextInput::make('numCartao')
+                TextInput::make('numero_cartao')
                     ->label('Número do Cartão')
                     ->required()
                     ->rule(['digits:16'])
                     ->placeholder('Digite o número do cartão.'),
 
-                TextInput::make('nomeCartao')
+                TextInput::make('nome_titular_cartao')
                     ->label('Nome do Titular')
                     ->required()
                     ->placeholder('Digite o nome do titular.'),

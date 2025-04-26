@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('motivo_recusado')->comment('Caso o status seja recusado, o motivo da recusa')->nullable();
             $table->timestamps();
 
-            $table->foreign('cliente_id')->references('id')->on('clientes');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

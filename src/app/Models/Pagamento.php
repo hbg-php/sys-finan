@@ -12,11 +12,12 @@ final class Pagamento extends Model
     protected $fillable = [
         'cliente_id',
         'conta_id',
-        'numCartao',
-        'codigoCVV',
-        'validade',
-        'dataPagamento',
+        'nome_titular_cartao',
+        'numero_cartao',
+        'data_pagamento',
+        'tipo_pagamento',
         'status',
+        'valor',
     ];
 
     public function usuario(): BelongsTo
