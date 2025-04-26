@@ -37,7 +37,7 @@ final class PagamentoResource extends Resource
                         }
                         $conta = Conta::find($contaId);
 
-                        return $conta ? 'R$ '.number_format($conta->valor, 2, ',', '.') : 'Conta não encontrada';
+                        return $conta ? 'R$ '.number_format((float) $conta->valor, 2, ',', '.') : 'Conta não encontrada';
                     })->columnSpan('full'),
 
                 TextInput::make('numCartao')

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\PagamentoResource\Pages;
 
 use App\Filament\Resources\PagamentoResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -22,6 +23,16 @@ final class CreatePagamento extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()->hidden();
+    }
+
+    protected function getCreateFormAction(): Action
+    {
+        return parent::getCreateFormAction()->label('Pagar');
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array
