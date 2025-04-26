@@ -111,7 +111,7 @@ final class ContaResource extends Resource
                         ? $conta->update(['dataPagamento' => date('Y-m-d')])
                         : $conta->update(['dataPagamento' => null])
                     )
-                    ->getStateUsing(fn (Conta $conta): bool => $conta->status === self::OPERACIONAL)
+                    ->getStateUsing(fn (Conta $conta): bool => $conta->status === self::PAGO)
                     ->onColor('success')
                     ->offColor('danger')
                     ->label('Status'),

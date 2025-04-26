@@ -10,12 +10,25 @@ use Filament\Resources\Pages\EditRecord;
 
 final class EditConta extends EditRecord
 {
+    private const PAGO = '1';
+
+    private const NAO_PAGO = '2';
+
     protected static string $resource = ContaResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\Action::make('pagarConta')
+                ->label('Pagar Conta')
+                ->color('success')
+                ->icon('heroicon-o-currency-dollar')
+                ->url(fn () => \App\Filament\Resources\PagamentoResource::getUrl('create', [
+                    'conta' => $this->record->getKey(),
+                ]))
+                ->requiresConfirmation()
+                ->hidden(fn () => $this->record->status !== self::NAO_PAGO),
         ];
     }
 
