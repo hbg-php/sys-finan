@@ -14,17 +14,39 @@ final class PagamentoAction
 {
     public function __construct()
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $this->setStripeApiKey();
     }
 
     public function handle(array $data)
     {
+        $this->validatePaymentData($data);
+
+        $paymentIntent = $this->createPaymentIntent($data);
+
+        if ($paymentIntent->status !== 'succeeded') {
+            throw new Exception(
+                'Pagamento recusado: '.$paymentIntent->last_payment_error->message
+            );
+        }
+
+        return $this->storePayment($data);
+    }
+
+    private function validatePaymentData(array $data): void
+    {
+        if (empty($data['payment_method_id'])) {
+            throw new Exception('ID do método de pagamento é obrigatório.');
+        }
+
         if ((float) $data['valor'] <= 0) {
             throw new Exception('Pagamento recusado: valor inválido.');
         }
+    }
 
+    private function createPaymentIntent(array $data): PaymentIntent
+    {
         try {
-            $paymentIntent = PaymentIntent::create([
+            return PaymentIntent::create([
                 'amount' => (int) ($data['valor'] * 100),
                 'currency' => 'BRL',
                 'payment_method_types' => ['card'],
@@ -32,16 +54,6 @@ final class PagamentoAction
                 'confirmation_method' => 'automatic',
                 'confirm' => true,
             ]);
-
-            if ($paymentIntent->status === 'succeeded') {
-                $fillable = (new Pagamento)->getFillable();
-
-                $filteredData = Arr::only($data, $fillable);
-
-                return Pagamento::create($filteredData);
-            }
-            throw new Exception('Pagamento não foi concluído. Status: '.$paymentIntent->status);
-
         } catch (\Stripe\Exception\CardException $e) {
             throw new Exception('Erro no cartão: '.$e->getMessage());
         } catch (\Stripe\Exception\ApiErrorException $e) {
@@ -49,5 +61,18 @@ final class PagamentoAction
         } catch (Exception $e) {
             throw new Exception('Erro ao processar pagamento: '.$e->getMessage());
         }
+    }
+
+    private function storePayment(array $data): Pagamento
+    {
+        $fillable = (new Pagamento)->getFillable();
+        $filteredData = Arr::only($data, $fillable);
+
+        return Pagamento::create($filteredData);
+    }
+
+    private function setStripeApiKey(): void
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
     }
 }
