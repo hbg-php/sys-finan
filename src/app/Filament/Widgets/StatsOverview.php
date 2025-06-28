@@ -36,7 +36,7 @@ final class StatsOverview extends BaseWidget
             ->sum('pagamento');
         $contasVencendo = Conta::where('user_id', $userId)
             ->where('status', '2')
-            ->whereBetween('dataVencimento', [$currentMonthStart, $currentMonthEnd])
+            ->whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])
             ->count();
         $contasNaoPagas = Conta::where('user_id', $userId)
             ->where('status', '2')
