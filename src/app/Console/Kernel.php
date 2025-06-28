@@ -14,7 +14,7 @@ final class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('contas:enviar-emails-vencidos')->dailyAt('08:00');
+        $schedule->command('app:enviar-emails-vencidos')->dailyAt('08:00');
     }
 
     /**
