@@ -27,9 +27,9 @@ final class ContaFactory extends Factory
             'descricao' => $this->faker->sentence(),
             'status' => $this->faker->randomElement(['1', '2']),
             'tipo' => $this->faker->randomElement(['1', '2']),
-            'numeroDocumento' => $this->faker->unique()->numerify('DOC-#####'),
-            'dataPagamento' => $this->faker->optional()->dateTimeBetween('-1 month', 'now'),
-            'dataVencimento' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'numero_documento' => $this->faker->unique()->numerify('DOC-#####'),
+            'data_pagamento' => $this->faker->optional()->dateTimeBetween('-1 month', 'now'),
+            'data_Vencimento' => $this->faker->dateTimeBetween('now', '+1 month'),
             'user_id' => 1,
         ];
     }
