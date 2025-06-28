@@ -30,10 +30,10 @@ class EnviarEmailsContasVencidas extends Command
     public function handle(): void
     {
         $hoje = Carbon::today();
-        $contas = Conta::whereDate('data_vencimento', $hoje)->get();
+        $contas = Conta::with('user')->whereDate('data_vencimento', $hoje)->get();
 
         foreach ($contas as $conta) {
-            Mail::to($conta->user->email)->send(new ContaVencidaEmail($conta));
+            Mail::to($conta->user->email)->queue(new ContaVencidaEmail($conta));
         }
         $this->info('E-mails enviados com sucesso.');
     }
