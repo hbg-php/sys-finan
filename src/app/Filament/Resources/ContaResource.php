@@ -47,7 +47,7 @@ final class ContaResource extends Resource
         return $form
             ->schema([
                 TextInput::make('fornecedor')->label('Fornecedor'),
-                TextInput::make('numeroDocumento')->label('Número do Documento'),
+                TextInput::make('numero_documento')->label('Número do Documento'),
                 TextInput::make('valor')->label('Valor')->currencyMask('.', ',', 2),
                 TextInput::make('descricao')->label('Descrição'),
                 Radio::make('tipo')
@@ -63,8 +63,8 @@ final class ContaResource extends Resource
                         self::NAO_PAGO => 'Não pago',
                     ])
                     ->reactive(),
-                DatePicker::make('dataPagamento')->label('Data do Pagamento'),
-                DatePicker::make('dataVencimento')->label('Data do Vencimento'),
+                DatePicker::make('data_pagamento')->label('Data do Pagamento'),
+                DatePicker::make('data_vencimento')->label('Data do Vencimento'),
                 FileUpload::make('imagem')
                     ->label('Comprovante')
                     ->image()
@@ -81,7 +81,7 @@ final class ContaResource extends Resource
         return parent::getEloquentQuery()
             ->select(['contas.*'])
             ->where('user_id', auth()->id())
-            ->orderBy('dataVencimento', 'desc');
+            ->orderBy('data_vencimento', 'desc');
     }
 
     public static function table(Table $table): Table
@@ -108,18 +108,18 @@ final class ContaResource extends Resource
                     ->visibleFrom('md'),
                 ToggleColumn::make('status')
                     ->beforeStateUpdated(fn (Conta $conta) => $conta->status !== self::PAGO
-                        ? $conta->update(['dataPagamento' => date('Y-m-d')])
-                        : $conta->update(['dataPagamento' => null])
+                        ? $conta->update(['data_pagamento' => date('Y-m-d')])
+                        : $conta->update(['data_pagamento' => null])
                     )
                     ->getStateUsing(fn (Conta $conta): bool => $conta->status === self::PAGO)
                     ->onColor('success')
                     ->offColor('danger')
                     ->label('Status'),
-                TextColumn::make('dataPagamento')
+                TextColumn::make('data_pagamento')
                     ->label('Data de Pagamento')
                     ->date('d-m-Y')
                     ->visibleFrom('md'),
-                TextColumn::make('dataVencimento')
+                TextColumn::make('data_vencimento')
                     ->label('Data de Vencimento')
                     ->date('d-m-Y'),
             ])
@@ -170,24 +170,24 @@ final class ContaResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('tipo', self::NAO_OPERACIONAL)),
                 Filter::make('dataIntervalo')
                     ->form([
-                        DatePicker::make('dataVencimento')->label('Data inicial:'),
+                        DatePicker::make('data_vencimento')->label('Data inicial:'),
                     ])
                     ->query(function (Builder $query, $data) {
                         return $query
                             ->when(
-                                $data['dataVencimento'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('dataVencimento', '>=', $date)
+                                $data['data_vencimento'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('data_vencimento', '>=', $date)
                             );
                     }),
                 Filter::make('dataIntervalo2')
                     ->form([
-                        DatePicker::make('dataVencimento')->label('Data Final:'),
+                        DatePicker::make('data_vencimento')->label('Data Final:'),
                     ])
                     ->query(function (Builder $query, $data) {
                         return $query
                             ->when(
-                                $data['dataVencimento'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('dataVencimento', '<=', $date)
+                                $data['data_vencimento'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('data_vencimento', '<=', $date)
                             );
                     }),
             ])

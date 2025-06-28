@@ -19,9 +19,9 @@ final class Conta extends Model
         'descricao',
         'status',
         'tipo',
-        'numeroDocumento',
-        'dataPagamento',
-        'dataVencimento',
+        'numero_documento',
+        'data_pagamento',
+        'data_vencimento',
         'imagem',
     ];
 

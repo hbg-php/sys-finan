@@ -43,10 +43,10 @@ final class ContasPagasExporter extends Exporter
                     ? 'Operacional'
                     : 'Não Operacional'
                 ),
-            ExportColumn::make('numeroDocumento')->label('Número do Documento'),
-            ExportColumn::make('dataVencimento')
+            ExportColumn::make('numero_documento')->label('Número do Documento'),
+            ExportColumn::make('data_vencimento')
                 ->label('Data de Vencimento')
-                ->getStateUsing(fn (Conta $conta): string => date('d/m/Y', strtotime($conta->dataVencimento))),
+                ->getStateUsing(fn (Conta $conta): string => date('d/m/Y', strtotime($conta->data_vencimento))),
         ];
     }
 
@@ -65,6 +65,6 @@ final class ContasPagasExporter extends Exporter
     {
         return $query
             ->where('status', '=', self::PAGO)
-            ->orderBy('dataVencimento', 'desc');
+            ->orderBy('data_vencimento', 'desc');
     }
 }
