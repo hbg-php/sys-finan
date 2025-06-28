@@ -20,13 +20,12 @@ return new class extends Migration
             $table->string('descricao')->nullable();
             $table->string('status')->nullable();
             $table->string('tipo');
-            $table->string('numeroDocumento')->nullable();
-            $table->date('dataPagamento')->nullable();
-            $table->date('dataVencimento');
+            $table->string('numero_documento')->nullable();
+            $table->date('data_pagamento')->nullable();
+            $table->date('data_vencimento');
             $table->string('imagem')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
