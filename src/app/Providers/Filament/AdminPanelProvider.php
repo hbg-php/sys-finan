@@ -6,6 +6,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Auth\CustomRegister;
 use App\Filament\Auth\Login;
+use App\Filament\Pages\EditProfile;
 use App\Filament\Widgets\FluxoCaixaAreaChart;
 use App\Filament\Widgets\ReceitaDespesaBarChart;
 use App\Filament\Widgets\SaldoLineChart;
@@ -33,7 +34,7 @@ final class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
-            ->profile()
+            ->profile(EditProfile::class)
             ->registration(CustomRegister::class)
             ->colors([
                 'primary' => Color::Amber,
