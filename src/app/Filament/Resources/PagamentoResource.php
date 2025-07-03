@@ -26,6 +26,8 @@ final class PagamentoResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('payment_method_id')
+                    ->default(fn () => request()->input('payment_method_id')),
                 Forms\Components\Hidden::make('conta_id')
                     ->default(fn () => request()->input('conta')),
                 Forms\Components\Placeholder::make('valorConta')
@@ -40,13 +42,11 @@ final class PagamentoResource extends Resource
                         return $conta ? 'R$ '.number_format((float) $conta->valor, 2, ',', '.') : 'Conta não encontrada';
                     })->columnSpan('full'),
 
-                TextInput::make('numero_cartao')
-                    ->label('Número do Cartão')
-                    ->required()
-                    ->rule(['digits:16'])
-                    ->placeholder('Digite o número do cartão.'),
+                Forms\Components\View::make('livewire.pagamento')
+                    ->label(null)
+                    ->columnSpan('full'),
 
-                TextInput::make('nome_titular_cartao')
+                /*TextInput::make('nome_titular_cartao')
                     ->label('Nome do Titular')
                     ->required()
                     ->placeholder('Digite o nome do titular.'),
@@ -61,7 +61,7 @@ final class PagamentoResource extends Resource
                     ->label('Validade')
                     ->required()
                     ->mask('99/99')
-                    ->placeholder('MM/AA'),
+                    ->placeholder('MM/AA'),*/
             ]);
     }
 
@@ -89,6 +89,11 @@ final class PagamentoResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
     }
 
     public static function getPages(): array
