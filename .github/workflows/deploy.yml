@@ -28,7 +28,7 @@ jobs:
         run: |
           ls -l ~/.ssh
           
-          ssh -i ~/.ssh/sysf.pem -o StrictHostKeyChecking=no ubuntu@ec2-52-1-182-237.compute-1.amazonaws.com << 'EOF'
+          ssh -i ~/.ssh/sysf.pem -o StrictHostKeyChecking=no ubuntu@44.220.152.213 << 'EOF'
             cd /var/www/sys-finan/src
             git pull origin master
             composer install --optimize-autoloader --no-dev
