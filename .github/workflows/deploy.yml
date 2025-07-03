@@ -29,7 +29,7 @@ jobs:
           ls -l ~/.ssh
           
           ssh -i ~/.ssh/sysf.pem -o StrictHostKeyChecking=no ubuntu@44.220.152.213 << 'EOF'
-            cd /sys-finan/src
+            cd /home/ubuntu/sys-finan/src
             git pull origin master
             composer install --optimize-autoloader --no-dev
             php artisan key:generate
