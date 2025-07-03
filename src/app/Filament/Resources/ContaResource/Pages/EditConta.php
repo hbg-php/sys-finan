@@ -28,7 +28,7 @@ final class EditConta extends EditRecord
                     'conta' => $this->record->getKey(),
                 ]))
                 ->requiresConfirmation()
-                ->hidden(fn () => $this->record->status !== self::NAO_PAGO),
+                ->hidden(fn () => $this->record->status === self::PAGO),
         ];
     }
 
