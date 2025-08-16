@@ -20,7 +20,7 @@ jobs:
 
       - name: Deploy to Hetzner
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@167.235.240.206 << 'EOF'
+          ssh -o StrictHostKeyChecking=no forge@167.235.240.206 << 'EOF'
             echo "➡️ Iniciando deploy Laravel no Hetzner"
 
             cd /home/ubuntu/sys-finan/src
