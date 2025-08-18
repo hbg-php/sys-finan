@@ -81,6 +81,7 @@ final class ContaResource extends Resource
         return parent::getEloquentQuery()
             ->select(['contas.*'])
             ->where('user_id', auth()->id())
+            ->orderBy('status', 'desc')
             ->orderBy('data_vencimento', 'desc');
     }
 
@@ -97,7 +98,9 @@ final class ContaResource extends Resource
                     ->searchable()
                     ->visibleFrom('md'),
                 TextColumn::make('valor')
-                    ->label('Valor'),
+                    ->label('Valor')
+                    ->money('BRL', 0, 'pt_BR')
+                    ->summarize(Tables\Columns\Summarizers\Sum::make()->label('Total')),
                 TextColumn::make('tipo')
                     ->getStateUsing(fn (Conta $conta): string => $conta->tipo === self::OPERACIONAL
                         ? 'Operacional'
