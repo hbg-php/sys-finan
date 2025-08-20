@@ -23,20 +23,20 @@ jobs:
           ssh -o StrictHostKeyChecking=no forge@167.235.240.206 << 'EOF'
             echo "➡️ Iniciando deploy Laravel no Hetzner"
 
-            cd /home/ubuntu/sys-finan/src
+            cd /home/forge/sys-finan/src
 
             git fetch --all
             git reset --hard origin/master
 
             composer install --optimize-autoloader --no-dev --no-interaction
 
-            php artisan migrate --force
+            php artisan migrate
 
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            chown -R www-data:www-data /home/ubuntu/sys-finan/src
+            chown -R www-data:www-data /home/forge/sys-finan/src
 
             echo "✅ Deploy finalizado com sucesso"
           EOF
