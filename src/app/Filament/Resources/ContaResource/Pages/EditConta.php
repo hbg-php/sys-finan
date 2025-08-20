@@ -20,7 +20,7 @@ final class EditConta extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
-            Actions\Action::make('pagarConta')
+            /*Actions\Action::make('pagarConta')
                 ->label('Pagar Conta')
                 ->color('success')
                 ->icon('heroicon-o-currency-dollar')
@@ -28,7 +28,7 @@ final class EditConta extends EditRecord
                     'conta' => $this->record->getKey(),
                 ]))
                 ->requiresConfirmation()
-                ->hidden(fn () => $this->record->status === self::PAGO),
+                ->hidden(fn () => $this->record->status === self::PAGO),*/
         ];
     }
 
