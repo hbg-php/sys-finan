@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Mail\ContaVencidaEmail;
@@ -8,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
-class EnviarEmailsContasVencidas extends Command
+final class EnviarEmailsContasVencidas extends Command
 {
     /**
      * The name and signature of the console command.

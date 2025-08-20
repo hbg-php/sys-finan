@@ -17,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 final class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, Billable, SoftDeletes;
+    use Billable, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +31,7 @@ final class User extends Authenticatable implements FilamentUser
         'cnpj',
         'razaoSocial',
         'is_admin',
-        'avatar'
+        'avatar',
     ];
 
     /**

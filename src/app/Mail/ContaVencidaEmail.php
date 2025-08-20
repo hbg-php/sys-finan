@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use App\Models\Conta;
@@ -8,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ContaVencidaEmail extends Mailable implements ShouldQueue
+final class ContaVencidaEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

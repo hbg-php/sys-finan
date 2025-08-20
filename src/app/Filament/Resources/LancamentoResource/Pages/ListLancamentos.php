@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\LancamentoResource\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Resources\LancamentoResource;
 use App\Filament\Resources\LancamentoResource\Widgets\LancamentoTotal;
+use Filament\Actions\CreateAction;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
 use Filament\Resources\Pages\ListRecords;
 

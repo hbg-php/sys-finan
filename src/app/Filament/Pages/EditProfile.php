@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Pages;
 
 use Filament\Forms\Components\FileUpload;
 
-class EditProfile extends \Filament\Pages\Auth\EditProfile
+final class EditProfile extends \Filament\Pages\Auth\EditProfile
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -28,6 +30,6 @@ class EditProfile extends \Filament\Pages\Auth\EditProfile
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ])
-                ->operation('edit');
+            ->operation('edit');
     }
 }

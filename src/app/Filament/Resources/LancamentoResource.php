@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\BulkAction;
-use App\Filament\Resources\LancamentoResource\Pages\ListLancamentos;
+use App\Filament\Exports\LancamentoExporter;
 use App\Filament\Resources\LancamentoResource\Pages\CreateLancamento;
 use App\Filament\Resources\LancamentoResource\Pages\EditLancamento;
-use App\Filament\Exports\LancamentoExporter;
+use App\Filament\Resources\LancamentoResource\Pages\ListLancamentos;
 use App\Models\Lancamento;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -23,6 +17,12 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -143,7 +143,7 @@ final class LancamentoResource extends Resource
                         DatePicker::make('dataLancamentoInicio')->label('Data Inicial'),
                         DatePicker::make('dataLancamentoFim')->label('Data Final'),
                     ])
-                    ->query(fn(Builder $builder, array $data): Builder => $builder
+                    ->query(fn (Builder $builder, array $data): Builder => $builder
                         ->when(
                             $data['dataLancamentoInicio'] ?? null,
                             fn (Builder $builder, $date) => $builder->whereDate('dataLancamento', '>=', $date)
@@ -171,7 +171,7 @@ final class LancamentoResource extends Resource
                         ->icon('heroicon-m-arrow-down-tray')
                         ->openUrlInNewTab()
                         ->deselectRecordsAfterCompletion()
-                        ->action(fn(Collection $lancamentos) => response()->streamDownload(function () use ($lancamentos): void {
+                        ->action(fn (Collection $lancamentos) => response()->streamDownload(function () use ($lancamentos): void {
                             echo Pdf::loadHTML(
                                 Blade::render('lancamentos-pdf', ['lancamentos' => $lancamentos])
                             )->stream();
