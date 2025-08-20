@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\BulkAction;
+use App\Filament\Resources\LancamentoResource\Pages\ListLancamentos;
+use App\Filament\Resources\LancamentoResource\Pages\CreateLancamento;
+use App\Filament\Resources\LancamentoResource\Pages\EditLancamento;
 use App\Filament\Exports\LancamentoExporter;
-use App\Filament\Resources\LancamentoResource\Pages;
 use App\Models\Lancamento;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -15,8 +23,8 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -75,12 +83,17 @@ final class LancamentoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->filtersTriggerAction(fn (Tables\Actions\Action $action) => $action->icon('heroicon-o-adjustments-vertical'))
+            ->filtersTriggerAction(fn (Action $action): Action => $action->icon('heroicon-o-adjustments-vertical'))
             ->columns([
                 TextColumn::make('recebimento')
                     ->label('Recebimento')
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable()
+                    ->summarize(
+                        Sum::make()
+                            ->label('Lucro Total')
+                            ->using(fn (Collection $records) => $records->sum(fn ($r): int|float => ($r->recebimento ?? 0) - ($r->pagamento ?? 0)))
+                    )
                     ->visibleFrom('md'),
                 TextColumn::make('pagamento')
                     ->label('Pagamento')
@@ -114,38 +127,36 @@ final class LancamentoResource extends Resource
             ])
             ->filters([
                 Filter::make('Dinheiro')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::DINHEIRO))
+                    ->query(fn (Builder $builder): Builder => $builder->where('tipoRecebimento', self::DINHEIRO))
                     ->label('Recebimento em Dinheiro'),
                 Filter::make('Bancário')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoRecebimento', self::BANCARIO))
+                    ->query(fn (Builder $builder): Builder => $builder->where('tipoRecebimento', self::BANCARIO))
                     ->label('Recebimento Bancário'),
                 Filter::make('Mercadoria')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::MERCADORIAS))
+                    ->query(fn (Builder $builder): Builder => $builder->where('tipoPagamento', self::MERCADORIAS))
                     ->label('Pagamento em Mercadorias'),
                 Filter::make('Outros')
-                    ->query(fn (Builder $query): Builder => $query->where('tipoPagamento', self::OUTROS))
+                    ->query(fn (Builder $builder): Builder => $builder->where('tipoPagamento', self::OUTROS))
                     ->label('Outros'),
                 Filter::make('Data de Lançamento')
                     ->form([
                         DatePicker::make('dataLancamentoInicio')->label('Data Inicial'),
                         DatePicker::make('dataLancamentoFim')->label('Data Final'),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['dataLancamentoInicio'] ?? null,
-                                fn (Builder $query, $date) => $query->whereDate('dataLancamento', '>=', $date)
-                            )
-                            ->when(
-                                $data['dataLancamentoFim'] ?? null,
-                                fn (Builder $query, $date) => $query->whereDate('dataLancamento', '<=', $date)
-                            );
-                    }),
+                    ->query(fn(Builder $builder, array $data): Builder => $builder
+                        ->when(
+                            $data['dataLancamentoInicio'] ?? null,
+                            fn (Builder $builder, $date) => $builder->whereDate('dataLancamento', '>=', $date)
+                        )
+                        ->when(
+                            $data['dataLancamentoFim'] ?? null,
+                            fn (Builder $builder, $date) => $builder->whereDate('dataLancamento', '<=', $date)
+                        )),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->hiddenLabel(),
-                Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation(function (Tables\Actions\Action $action) {
+                EditAction::make()->hiddenLabel(),
+                DeleteAction::make()
+                    ->requiresConfirmation(function (Action $action): Action {
                         $action->modalDescription('Tem certeza que deseja excluir este lançamento?');
                         $action->modalHeading('Excluir Lançamento');
 
@@ -154,19 +165,17 @@ final class LancamentoResource extends Resource
                     ->hiddenLabel(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\BulkAction::make('Pdf')
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    BulkAction::make('Pdf')
                         ->icon('heroicon-m-arrow-down-tray')
                         ->openUrlInNewTab()
                         ->deselectRecordsAfterCompletion()
-                        ->action(function (Collection $lancamentos) {
-                            return response()->streamDownload(function () use ($lancamentos) {
-                                echo Pdf::loadHTML(
-                                    Blade::render('lancamentos-pdf', ['lancamentos' => $lancamentos])
-                                )->stream();
-                            }, 'lancamentos.pdf');
-                        }),
+                        ->action(fn(Collection $lancamentos) => response()->streamDownload(function () use ($lancamentos): void {
+                            echo Pdf::loadHTML(
+                                Blade::render('lancamentos-pdf', ['lancamentos' => $lancamentos])
+                            )->stream();
+                        }, 'lancamentos.pdf')),
                 ]),
             ])
             ->headerActions([
@@ -183,9 +192,9 @@ final class LancamentoResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLancamentos::route('/'),
-            'create' => Pages\CreateLancamento::route('/create'),
-            'edit' => Pages\EditLancamento::route('/{record}/edit'),
+            'index' => ListLancamentos::route('/'),
+            'create' => CreateLancamento::route('/create'),
+            'edit' => EditLancamento::route('/{record}/edit'),
         ];
     }
 }
